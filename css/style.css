@@ -1,0 +1,299 @@
+#map {
+    position: absolute;
+    width: 100%;
+    height: calc(var(--vh, 1vh) * 90);
+    right: 0px;
+    bottom: 0px;
+    z-index: 1;
+}
+
+#search-container {
+    display: flex;
+    position: fixed;
+    top: calc(var(--vh, 1vh) * 2);
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+    height: 40px;
+    background: white;
+    border-radius: 25px;
+    padding: 5px 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 3;
+}
+
+#search-container input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 3px;
+    font-size: 15px;
+    outline: none;
+}
+
+/* 검색 버튼 */
+#search-container button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 0px;
+    outline: none;
+}
+
+.category-buttons {
+    position: absolute;
+    top: 2vh;
+    left: 1.5vw;
+    display: flex;
+    gap: 10px;
+    z-index: 3;
+}
+
+/* 카테고리 버튼 크기 및 모양 */
+.category-buttons button {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    /* 둥근 버튼 */
+    padding: 8px 15px;
+    /* 버튼 안의 텍스트와 테두리의 여백 조절 */
+    font-size: 15px;
+    font-family: 'Protendard', sans-serif;
+    cursor: pointer;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.category-buttons img {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 마우스 올려놓을 시 색상 변경 */
+.category-buttons button:hover {
+    background: lightgrey;
+}
+
+.category-buttons button.active {
+    background: lightgrey;
+}
+
+#dashboard {
+    display: block;
+}
+
+#management {
+    padding: 20px;
+}
+
+.management-header, .management-item {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 10px;
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+}
+
+.management-header span {
+    flex: 1;
+    font-weight: bold;
+    text-align: center;
+}
+
+.management-item span {
+    flex: 1;
+    text-align: center;
+}
+
+.management-item button {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 4px 8px;
+    flex: 0 0 50px;
+}
+
+.management-item button:hover {
+    background-color: lightgray;
+}
+
+
+#sidebar {
+    position: fixed;
+    display: flex;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    width: 17vw;
+    height: 100%;
+    gap: 25px;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    background-color:darkseagreen;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    /* 부드럽게 이동 */
+    align-items: flex-end;
+    padding: 0;
+    z-index: 10;
+}
+
+#sidebar div {
+    position: absolute;
+    top: 1vh;
+    color: white;
+    font-size: 27px;
+    align-items: center;
+    padding: 50px;
+}
+
+#sidebar .divider {
+    width: 80%;                           /* 좌우 길이 조절 */
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin-top: -20px;
+    margin-bottom: 5px;
+    padding-top: 200px;
+}
+
+#sidebar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    text-align: center;
+    align-items: flex-end;
+    padding: 8px;
+    width: 100%;
+    height: 5vh;
+    margin-right: 0;
+    margin-left: auto;
+    padding-right: 10px;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+    outline: none;
+    transform: translateY(0vh);
+}
+
+#sidebar button:hover {
+    background-color:skyblue;
+}
+
+#sidebar-tab {
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 80%;
+    background-color: lightgray;
+    opacity: 0.6;
+    z-index: 10;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border: none;
+}
+
+#floorMapContainer {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    width: 100%;
+    height: calc(var(--vh, 1vh) * 90);
+    right: 0px;
+    bottom: 0px;
+    display: none;
+    z-index: 2;
+}
+
+#floorButtons {
+    position: absolute;
+    bottom: 2vh;
+    right: 1vw;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+    flex-wrap: nowrap;
+    flex-direction: column;
+}
+
+#floorButtons button {
+    padding: 8px 12px;
+    cursor: pointer;
+    border: none;
+    background: #555;
+    color: white;
+    border-radius: 25px;
+}
+
+#floorButtons button:hover {
+    background: lightgray;
+}
+
+#floorMap {
+    flex-grow: 1;
+    width: 90%;
+    height: 90%;
+    border: none;
+}
+
+#closeBtn {
+    position: absolute;
+    top: 2vh;
+    right: 1vw;
+    margin-top: 10px;
+    padding: 5px 15px;
+    cursor: pointer;
+    border: none;
+    background: red;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+#closeBtn:hover {
+    background-color: tomato;
+}
+
+svg {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+}
+
+svg:active {
+    cursor: grabbing;
+}
+
+html,
+body {
+    /* 화면 스크롤 X */
+    overflow: hidden;
+    height: 100%;
+    /* HTML과 body 태그의 높이를 100%로 설정 */
+    margin: 0;
+    /* 기본 margin 제거 */
+    padding: 0;
+    /* 기본 padding 제거 */
+    display: flex;
+    flex-direction: column;
+    /* 수직으로 레이아웃 배치 */
+}
+
+#header {
+    width: 100%;
+    background-color:blanchedalmond;
+    display: flex;
+    height: calc(var(--vh, 1vh) * 10); /* 또는 height: 60px; 등 */
+    box-sizing: border-box;
+}
