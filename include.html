@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>소방 응급 시설 관리 체계 Test</title>
+    <script type="text/javascript"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=124e4b785cbdd3fc46a37b0abd30547f"></script>
+    <script src="/initmap.js" defer></script>
+    <script src="/sidebar.js" defer></script>
+    <script src="/floor_map.js" defer></script>
+    <script src="/management.js" defer></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="header">
+        <div id="search-container">
+            <input type="text" id="searchInput" placeholder="장소를 입력하세요" onkeypress="handleKeyPress(event)">
+            <button onclick="searchLocation()">
+                <span class="material-icons"> search </span>
+            </button>
+        </div>
+    </div>
+
+    <div id="dashboard">
+        <div id="map">
+            <div class="category-buttons">
+                <button class="category_place" data-query="소화기" onclick="searchPlaces('소화기')">
+                    <img src="assets/category/은행.svg" alt="소화기">
+                    소화기
+                </button>
+
+                <button class="category_place" data-query="소화전" onclick="searchPlaces('소화전')">
+                    <img src="assets/category/편의점.svg" alt="소화전">
+                    소화전
+                </button>
+
+                <button class="category_place" data-query="AED" onclick="searchPlaces('AED')">
+                    <img src="assets/category/카페.svg" alt="AED">
+                    AED
+                </button>
+
+                <button class="category_place" data-query="보건실" onclick="searchPlaces('보건실')">
+                    <img src="assets/category/구급상자.svg" alt="보건실">
+                    보건실
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="container">
+        <button id="sidebar-tab"></button>
+
+        <div id="sidebar">
+            <div>소방 응급 시설 관리 체계</div>
+            <hr class="divider" />
+            <button onclick="showDashboard()"> Dashboard </button>
+            <button onclick="showManagement()"> Management </button>
+            <button onclick="setting()"> Settings </button>
+        </div>
+
+        <div id="management">
+            <!-- 헤더 -->
+            <div class="management-header">
+                <span>Name</span>
+                <span>Type</span>
+                <span>Date</span>
+                <span>Location</span>
+            </div>
+
+            <!-- 데이터 항목 -->
+            <div id="management-list"></div>
+        </div>
+
+        <div id="floorMapContainer">
+            <div id="floorButtons"></div>
+            <object id="floorMap" type="image/svg+xml"></object>
+            <button id="closeBtn" onclick="closeFloorMap()">닫기</button>
+        </div>
+    </div>
+</body>
+
+</html>
