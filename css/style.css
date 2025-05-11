@@ -96,7 +96,7 @@
     display: flex;
     align-items: center;
     gap: 0;
-    margin-bottom: 10px;
+    margin: 20px;
     padding: 8px;
     border-bottom: 1px solid #ccc;
 }
@@ -116,16 +116,35 @@
     background-color: #eee;
     border: 1px solid #ccc;
     border-radius: 25px;
+    border: none;
+    background: none;
     font-size: 13px;
     cursor: pointer;
     padding: 4px 8px;
     flex: 0 0 50px;
 }
 
-.management-item button:hover {
-    background-color: lightgray;
+.settings-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+    z-index: 10;
+    min-width: 80px;
 }
 
+.settings-menu div {
+    padding: 8px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.settings-menu div:hover {
+    background-color: #f0f0f0;
+}
 
 #sidebar {
     position: fixed;
@@ -160,7 +179,7 @@
 #sidebar .divider {
     width: 80%;                           /* 좌우 길이 조절 */
     border: none;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #f0f0f0;
     margin-top: -20px;
     margin-bottom: 5px;
     padding-top: 200px;
