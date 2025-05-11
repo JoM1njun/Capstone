@@ -27,7 +27,14 @@ function loadManagementItems() {
             <span contenteditable="false">${item.type}</span>
             <span contenteditable="false">${item.date}</span>
             <span contenteditable="false">${item.location}</span>
-            <button onclick="editRow(this)">설정</button>
+            <button onclick="editRow(this)">
+            <span class="material-symbols-outlined">more_vert</span>
+            <div class="settings-menu">
+            <div onclick="editRow(this)">수정</div>
+            <div onclick="completeRow(this)">완료</div>
+            <div onclick="deleteRow(this)">삭제</div>
+            </div>
+            </button>
         `;
 
         listContainer.appendChild(itemDiv);
