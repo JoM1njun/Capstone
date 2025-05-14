@@ -5,14 +5,17 @@ function initMap() {
     console.log(kakao);
     let container = document.getElementById("map");
     let options = {
-        center: new kakao.maps.LatLng(36.320430029704, 127.36680988956), // 배재대 중앙 위치 / 초기 위치
-        level: 3 // 줌 레벨 (값이 낮을수록 확대)
+        center: new kakao.maps.LatLng(36.318315, 127.367326), // 배재대 중앙 위치 / 초기 위치
+        level: 2 // 줌 레벨 (값이 낮을수록 확대)
     };
     map = new kakao.maps.Map(container, options);
 
     // 장소 데이터 (층별 지도 자동 생성)
     const places = [
-        { name: "하워드관", code: "H", lat: 36.317620, lng: 127.367249, maxFloor: 4 }
+        { name: "하워드관", code: "H", lat: 36.317620000, lng: 127.367249000, maxFloor: 5 },
+        { name: "정보과학관", code: "C", lat: 36.317603000, lng: 127.367763000, maxFloor: 5 },
+        { name: "자연과학관", code: "J", lat: 36.318175000, lng: 127.366354000, maxFloor: 5 },
+        { name: "스마트배재관", code: "SP", lat: 36.319253000, lng: 127.367020000, maxFloor: 5 }
     ];
 
     places.forEach(place => {
