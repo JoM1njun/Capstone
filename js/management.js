@@ -7,6 +7,7 @@ async function loadManagementItems() {
   const res = await fetch("http://localhost:3000/api/management");
   managementData = await res.json();
   console.log("Data : ", managementData);
+  console.log("Test");
 
   renderPage();
 }
@@ -14,8 +15,8 @@ async function loadManagementItems() {
 // DB Date 날짜 포맷
 function formatDate(dateString) {
   const date = new Date(dateString);
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return date.toLocaleDateString('ko-KR', options); // 한국어로 포맷팅
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return date.toLocaleDateString("ko-KR", options); // 한국어로 포맷팅
 }
 
 // Management 화면 표시
@@ -35,17 +36,10 @@ function renderPage() {
             <span contenteditable="false">${item.type_name}</span>
             <span contenteditable="false">${formatDate(item.date)}</span>
             <span contenteditable="false">${item.location}</span>
-            <div class="button_group">
-                <button onclick="editRow(this)">
-                    <span class="material-symbols-outlined">more_vert</span>
-                </button>
-                <div class="settings-menu">
-                    <button onclick="editRow(this)">수정</button>
-                    <button onclick="completeRow(this)">완료</button>
-                    <button onclick="deleteRow(this)">삭제</button>
-                </div>
-            </div>
         `;
+    itemDiv.addEventListener("click", () => {
+      showDetailView(item);
+    });
     listContainer.appendChild(itemDiv);
   });
 
@@ -78,6 +72,36 @@ function renderPagination() {
     pagination.appendChild(nextBtn);
   }
 }
+
+function showDetailView(item) {
+  document.getElementById("management-list").classList.add("hidden");
+  document.getElementById("detail-container").classList.remove("hidden");
+
+  const content = document.getElementById("detail-content");
+  content.innerHTML = `
+        <h3>${item.name} 상세 정보</h3>
+        <p><strong>종류</strong> ${item.type_name}</p>
+        <p><strong>제조일자</strong> ${formatDate(item.date)}</p>
+        <p><strong>위치</strong> ${item.location}</p>
+        <p><strong>희석된 날짜</strong> ${formatDate(item.date)}</p>
+        <div class="button_group">
+          <button onclick="editRow(this)">
+            <span class="material-symbols-outlined">more_vert</span>
+          </button>
+          <div class="settings-menu">
+            <button onclick="editRow(this)">수정</button>
+            <button onclick="completeRow(this)">완료</button>
+            <button onclick="deleteRow(this)">삭제</button>
+          </div>
+        </div>
+        <canvas id="movementChart" width="400" height="200"></canvas>
+    `;
+}
+
+document.getElementById("back-button").addEventListener("click", () => {
+  document.getElementById("detail-container").classList.add("hidden");
+  document.getElementById("management-list").classList.remove("hidden");
+});
 
 function toggleMenu(button) {
   // 모든 열린 메뉴 닫기
