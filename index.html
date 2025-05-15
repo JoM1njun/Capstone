@@ -8,6 +8,7 @@
     <script type="text/javascript"
         src="//dapi.kakao.com/v2/maps/sdk.js?appkey=124e4b785cbdd3fc46a37b0abd30547f"></script>
     <script src="js/initmap.js" defer></script>
+    <script src="js/db_connect.js" defer></script>
     <script src="js/sidebar.js" defer></script>
     <script src="js/floor_map.js" defer></script>
     <script src="js/management.js" defer></script>
@@ -89,12 +90,17 @@
             <div id="pagination"></div>
         </div>
 
+        <div id="detail-container">
+            <div id="detail-content">
+                <button id="back-button">뒤로 가기</button>
+            </div>
+        </div>
+
         <div id="floorMapContainer">
             <div id="floorButtons"></div>
             <object id="floorMap" type="image/svg+xml"></object>
             <button id="closeBtn" onclick="closeFloorMap()">닫기</button>
         </div>
-        <canvas id="movementChart" width="400" height="200"></canvas>
     </div>
 </body>
 
