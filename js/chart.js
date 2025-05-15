@@ -1,10 +1,10 @@
-function chart() {
+function chart(labelName) {
   const ctx = document.getElementById('myChart').getContext('2d');
 
   const data = {
     labels: ['A', 'B', 'C', 'D', 'E'],
     datasets: [{
-      label: 'Sample Data',
+      label: `${labelName}`,
       data: [0.1, 0.5, 0.7, 0.3, 0.9],
       borderColor: 'rgba(75, 192, 192, 1)',
       backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -34,6 +34,7 @@ function chart() {
       }
     }
   };
+  new Chart(ctx, config);
 }
 
 function getTodayDate() {
