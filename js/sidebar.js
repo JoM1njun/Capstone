@@ -23,6 +23,7 @@ function showDashboard() {
 function showManagement() {
     document.getElementById("dashboard").style.display = "none";
     document.getElementById("management").style.display = "block";
+    loadManagementItems();
 }
 
 window.addEventListener('DOMContentLoaded', () => {
