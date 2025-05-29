@@ -15,24 +15,29 @@ function sidebarOpenClose() {
     });
 }
 
-function showDashboard() {
-    document.getElementById("dashboard").style.display = "block";
-    document.getElementById("management").style.display = "none";
+function hideAllSections() {
+  document.getElementById("dashboard").style.display = "none";
+  document.getElementById("management").style.display = "none";
+  document.getElementById("floorMapContainer").style.display = "none";
 }
 
-function showManagement() {
-    document.getElementById("dashboard").style.display = "none";
-    document.getElementById("management").style.display = "block";
-    loadManagementItems();
+function showDashboard() {
+    hideAllSections(); // 다른 화면 다 숨기기
+    document.getElementById("dashboard").style.display = "block";
 }
+
+// function showManagement() {
+//     document.getElementById("dashboard").style.display = "none";
+//     document.getElementById("management").style.display = "block";
+//     loadManagementItems();
+// }
 
 window.addEventListener('DOMContentLoaded', () => {
     sidebarOpenClose();
     showDashboard();
-    showManagement();
 });
 
-window.onload = () => {
-    document.getElementById("dashboard").style.display = "block";
-    document.getElementById("management").style.display = "none";
-};
+// window.onload = () => {
+//     document.getElementById("dashboard").style.display = "block";
+//     document.getElementById("management").style.display = "none";
+// };
