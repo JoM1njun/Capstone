@@ -39,6 +39,11 @@ async function initMap() {
   }
 }
 
-kakao.maps.load(function () {
-  initMap();
+async function main() {
+  await loadMarker();
+  await initMap();
+}
+
+kakao.maps.load(() => {
+  main();
 });
