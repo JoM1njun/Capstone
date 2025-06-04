@@ -43,7 +43,7 @@ async function initMap() {
     map = new kakao.maps.Map(container, options);
     
     // 2. 마커 이미지와 장소 데이터를 병렬로 로드
-    const [places] = await Promise.all([
+    const [places, _] = await Promise.all([
       fetch("https://capstone-back.fly.dev/api/places").then(res => res.json()),
       preloadMarkerImages()
     ]);
