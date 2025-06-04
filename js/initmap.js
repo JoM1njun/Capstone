@@ -61,7 +61,7 @@ async function initMap() {
       return { marker, place };
     });
     markers.forEach(({marker, place}) => {
-    kakao.maps.event.addListener(marker, "click", () => showFloorMap(place));
+    kakao.maps.event.addListener(marker, "click", function () => showFloorMap(place));
     });
   } catch (err) {
     console.error("Failed to load places:", err);
