@@ -21,7 +21,7 @@ async function chart(itemId) {
           borderColor: "rgba(75, 192, 192, 1)",
           backgroundColor: "rgba(75, 192, 192, 0.2)",
           fill: true,
-          tension: 0.4,
+          tension: 0.7,
           pointBackgroundColor: "red", // point 색상
           pointBorderColor: "black",
           pointRadius: 4, // 점 크기
