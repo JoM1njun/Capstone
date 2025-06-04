@@ -51,6 +51,8 @@ async function initMap() {
     const markers = places.map(place => {
       place.floors = generateFloors(place.alias, place.maxfloor);
 
+      const markerImage = markerCache.category[place.name] || markerCache.default;
+
       const marker = new kakao.maps.Marker({
         position: new kakao.maps.LatLng(place.lat, place.lng),
         map: map,
