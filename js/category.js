@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const categoryButtons = document.querySelectorAll('.category-btn');
     categoryButtons.forEach(button => {
       button.addEventListener('click', function() {
-        const category = this.getAttribute('data-category');
+        const category = this.getAttribute('data-query');
         searchPlaces(category);
       });
     });
