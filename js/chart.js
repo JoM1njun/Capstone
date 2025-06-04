@@ -1,9 +1,11 @@
+let movementChart = null;
+
 async function chart(itemId) {
   const ctx = document.getElementById("movementChart").getContext("2d");
 
   // 기존 차트가 있다면 제거
-  if (window.movementChart) {
-    window.movementChart.destroy();
+  if (movementChart) {
+    movementChart.destroy();
   }
 
   try {
@@ -45,7 +47,7 @@ async function chart(itemId) {
         },
       },
     };
-    window.movementChart = new Chart(ctx, config);
+    movementChart = new Chart(ctx, config);
   } catch (error) {
     console.log("차트 데이터를 불러오는 중 오류 발생", error);
   }
