@@ -4,7 +4,7 @@ let currentPage = 1; // 현재 페이지
 
 // DB 데이터 가져오기
 async function loadManagementItems() {
-  const res = await fetch("http://43.201.78.22:3000/api/management");
+  const res = await fetch("https://capstone-back.fly.dev/api/management");
   managementData = await res.json();
   console.log("Data : ", managementData);
   console.log("Test");
