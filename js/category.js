@@ -23,7 +23,7 @@ function searchPlaces(category) {
   if (typeId) {
     console.log("typeId : ", typeId);
     fetch(
-      `http://localhost:3000/api/category?query=` + encodeURIComponent(typeId)
+      `http://43.201.78.22:3000/api/category?query=` + encodeURIComponent(typeId)
     )
       .then((response) => response.json())
       .then((data) => {
