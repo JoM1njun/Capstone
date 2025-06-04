@@ -18,7 +18,7 @@ async function initMap() {
 
   // 장소 데이터 (층별 지도 자동 생성)
   try {
-    const res = await fetch("http://43.201.78.22:3000/api/places");
+    const res = await fetch("https://capstone-back.fly.dev/api/places");
     const places = await res.json();
 
     places.forEach((place) => {
