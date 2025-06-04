@@ -12,7 +12,7 @@ function generateFloors(buildingCode, maxFloor) {
 let floorMarkers = {};
 async function loadMarker() {
   try {
-    const res = await fetch("http://localhost:3000/api/marker");
+    const res = await fetch("http://43.201.78.22:3000/api/marker");
     const data = await res.json();
 
     floorMarkers = {}; // 초기화
