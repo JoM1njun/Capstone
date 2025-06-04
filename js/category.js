@@ -37,8 +37,6 @@ function searchPlaces(category) {
           return;
         }
 
-        console.log("Places : ", places);
-
         // 기존 마커와 infoWindow 제거
         userMarker.forEach((obj) => {
           if (obj.infoWindow) {
