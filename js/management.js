@@ -184,7 +184,7 @@ function editRow(button) {
     };
   });
 
-  fetch("http://localhost:3000/api/places")
+  fetch("https://capstone-back.fly.dev/api/places")
     .then((res) => res.json())
     .then((data) => {
       const buildingList = data.map((b) => b.name);
@@ -382,7 +382,7 @@ async function saveDetail(itemId, originalData) {
 
   try {
     const response = await fetch(
-      `http://localhost:3000/api/management/${itemId}`,
+      `https://capstone-back.fly.dev/api/management/${itemId}`,
       {
         method: "PUT",
         headers: {
@@ -417,7 +417,7 @@ async function deleteRow(button) {
   if (confirm("정말로 이 항목을 삭제하시겠습니까?")) {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/management/${itemId}`,
+        `https://capstone-back.fly.dev/api/management/${itemId}`,
         {
           method: "DELETE",
         }
