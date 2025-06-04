@@ -7,15 +7,15 @@ async function chart(itemId) {
   }
 
   try {
-    const response = await fetch(
-      `https://capstone-back.fly.dev/api/management/movement/${itemId}`
-    );
+    const response = await fetch(`https://capstone-back.fly.dev/api/management/movement/${itemId}`);
+    const json = await response.json();
+    
     const data = {
-      labels: data.labels,
+      labels: json.labels,
       datasets: [
         {
-          label: `${data.name} 기록`,
-          data: data.values,
+          label: `${json.name} 기록`,
+          data: json.values,
           borderColor: "rgba(75, 192, 192, 1)",
           backgroundColor: "rgba(75, 192, 192, 0.2)",
           fill: true,
