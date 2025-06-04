@@ -41,7 +41,12 @@ async function chart(itemId) {
             min: 0,
             max: 1,
             ticks: {
-              stepSize: 0.1,
+              stepSize: 1,
+              callback: function(value) {
+                // 0 또는 1일 때만 표시
+                if (value === 0 || value === 1) return value;
+                return '';
+              },
             },
           },
         },
