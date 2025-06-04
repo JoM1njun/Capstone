@@ -212,7 +212,7 @@
 #detail-container {
     position: absolute;
     left: 50%;
-    max-height: 85%;
+    transform: translateX(-50%);
     margin-right: 20px;
     border-radius: 15px;
     background-color: transparent;
@@ -225,8 +225,8 @@
     gap: 0;
     margin: 20px;
     padding: 8px; */
-    transform: translateX(-50%);
     width: calc(var(--vw, 1vw) * 90);
+    max-height: 100%;
     flex-direction: column;
     margin-top: 10px; /* back-button 아래로 내용 이동 */
     padding: 10px;
