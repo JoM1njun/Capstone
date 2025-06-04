@@ -8,7 +8,7 @@ async function chart(itemId) {
 
   try {
     const response = await fetch(
-      `http://localhost:3000/api/management/movement/${itemId}`
+      `http://43.201.78.22:3000/api/management/movement/${itemId}`
     );
     const data = {
       labels: data.labels,
