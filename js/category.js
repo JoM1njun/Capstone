@@ -1,21 +1,21 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // 모든 카테고리 버튼에 이벤트 리스너 등록
-    const categoryButtons = document.querySelectorAll('.category-btn');
-    categoryButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        const category = this.getAttribute('data-query');
-        searchPlaces(category);
-      });
+document.addEventListener("DOMContentLoaded", function () {
+  // 모든 카테고리 버튼에 이벤트 리스너 등록
+  const categoryButtons = document.querySelectorAll(".category-btn");
+  categoryButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      const category = this.getAttribute("data-query");
+      searchPlaces(category);
     });
   });
+});
 
 function searchPlaces(category) {
   var activemarker = null;
 
   const categoryToTypeId = {
-    '소화기': 1,
-    '소화전': 2,
-    'AED': 3
+    소화기: 1,
+    소화전: 2,
+    AED: 3,
   };
 
   const typeId = categoryToTypeId[category];
@@ -23,12 +23,20 @@ function searchPlaces(category) {
   if (category) {
     console.log("typeId : ", category);
     fetch(
-      `https://capstone-back.fly.dev/api/category?query=` + encodeURIComponent(category)
+      `https://capstone-back.fly.dev/api/category?query=` +
+        encodeURIComponent(category)
     )
       .then((response) => response.json())
       .then((data) => {
         console.log("Received : ", data);
         const places = data.places; // places로 수정
+        console.log("Places : ", places);
+
+        if (!places || !Array.isArray(places)) {
+          alert(`[${category}] 카테고리에서 찾을 수 있는 장소가 없습니다.`);
+          return;
+        }
+
         console.log("Places : ", places);
 
         // 기존 마커와 infoWindow 제거
