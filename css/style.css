@@ -199,7 +199,6 @@
     left: 0;
     width: 100%;
     height: calc(var(--vh, 1vh) * 65);
-    max-height: 100%;
     border-radius: 15px;
     background-color: lightgray;
     z-index: 6; /* management-container보다 위에 표시 */
