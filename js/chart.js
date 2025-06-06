@@ -32,6 +32,7 @@ async function chart(itemId) {
         data: data,
         options: {
           responsive: true,
+          maintainAspectRatio: false,
           scales: {
             y: {
               min: 0,
