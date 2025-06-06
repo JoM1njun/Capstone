@@ -61,6 +61,7 @@ async function chart(itemId) {
 
       // 변경사항 반영
       movementChart.update();
+    }
   } catch (error) {
     console.log("차트 데이터를 불러오는 중 오류 발생", error);
   }
