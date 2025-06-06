@@ -259,8 +259,8 @@
 }
 
 #movementChart {
-    position: absolute;
-    width: calc(var(--vw, 1vw) * 80);
+    position: relative;
+    width: 100%;
     height: 100%;
 }
 
