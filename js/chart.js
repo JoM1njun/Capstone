@@ -12,8 +12,6 @@ async function chart(itemId) {
         const response = await fetch(`https://capstone-back.fly.dev/api/management/movement/${itemId}`);
         const semsors = await response.json();
 
-        const sensors = await response.json();
-
         const allTimestampsSet = new Set();
         sensors.forEach(sensor => {
             sensor.data.forEach(entry => allTimestampsSet.add(entry.shake_date));
