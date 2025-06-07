@@ -55,12 +55,8 @@ function showFloorMap(place) {
 
       // 이미지 경로 유효성 검사
       try {
-        const place = await fetch(place.name, {method: "HEAD"});
         const res = await fetch(imagePath, { method: "HEAD" });
-        if (!place.ok) {
-          alert(`${place}의 이미지 파일이 존재하지 않습니다.`);
-          return; // 여기서 중단!
-        }
+        
         if (!res.ok) {
           alert(`${floor}의 이미지 파일이 존재하지 않습니다.`);
           return; // 여기서 중단!
