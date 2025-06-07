@@ -34,7 +34,7 @@ async function loadMarker() {
     }
 }
 
-function showFloorMap(place) {
+async function showFloorMap(place) {
     console.log("✅ showFloorMap 실행됨!", place);
     console.log("📌 place.floors 값:", place.floors);
 
