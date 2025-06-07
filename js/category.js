@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   categoryButtons.forEach((button) => {
     button.addEventListener("click", function () {
       const category = this.getAttribute("data-query");
+      console.log("Clicked category:", category);
       searchPlaces(category);
     });
   });
