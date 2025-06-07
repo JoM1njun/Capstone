@@ -29,11 +29,7 @@ function searchPlaces(category) {
       .then((response) => response.json())
       .then((data) => {
         console.log("API Raw Response", data);
-
-        const places = Array.isArray(data) ? data :
-                 data.places ? data.places :
-                 data.data?.places;
-        
+        const places = data;
         console.log("Places : ", places);
 
         if (!places || !Array.isArray(places)) {
