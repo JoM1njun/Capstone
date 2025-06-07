@@ -66,6 +66,11 @@ function searchPlaces(category) {
                 if (places && places.length > 0) {
                     try {
                         places.forEach((place, index) => {
+                            if (!place || typeof place.latitude !== "number" || typeof place.longitude !== "number") {
+                                console.warn(`잘못된 place 데이터 [index: ${index}]`, place);
+                                return; // skip this iteration
+                            }
+                            
                             console.log("위치 : ", place.latitude, place.longitude);
                             let placeLocation = new kakao.maps.LatLng(
                                 place.latitude,
