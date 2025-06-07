@@ -36,10 +36,14 @@ function searchPlaces(category) {
                 console.log("places 타입 확인:", typeof places);
                 console.log("places isArray?:", Array.isArray(places));
 
-                if (!places || !Array.isArray(places)) {
-                    const message = data.error || "장소 목록을 불러오는데 실패하였습니다.";
-                    alert(`[${category}] 카테고리에서 찾을 수 있는 장소가 없습니다.`);
-                    return;
+                if (!Array.isArray(places)) {
+                    // 혹시 data.places가 undefined일 때 data 자체가 배열인지도 확인
+                    if (Array.isArray(data)) {
+                        places = data;
+                    } else {
+                        alert("장소 데이터가 올바르지 않습니다.");
+                        return;
+                    }
                 }
 
                 // 기존 마커와 infoWindow 제거
