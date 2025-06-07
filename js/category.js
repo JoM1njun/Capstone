@@ -23,7 +23,7 @@ function searchPlaces(category) {
   if (category) {
     console.log("typeId : ", category);
     fetch(
-      `https://capstone-back.fly.dev/api/category?type=${typeId}`
+      `https://capstone-back.fly.dev/api/category?query=${encodeURIComponent(category)}`
     )
       .then((response) => response.json())
       .then((data) => {
