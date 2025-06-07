@@ -11,7 +11,7 @@ async function chart(itemId) {
     try {
         const response = await fetch(`https://capstone-back.fly.dev/api/management/movement/${itemId}`);
         const json = await response.json();
-        console.log("sensors 데이터:", sensors);
+        console.log("json 데이터:", json);
 
         const data = {
             labels: json.labels,  // 날짜 라벨
