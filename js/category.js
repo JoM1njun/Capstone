@@ -29,7 +29,7 @@ function searchPlaces(category) {
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log("Received /api/category request, query:", req.query);
+        console.log("Fetched data for category typeId:", typeId);
         console.log("API Raw Response", data);
         const places = data;
         console.log("Places : ", places);
