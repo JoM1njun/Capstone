@@ -31,7 +31,7 @@ function searchPlaces(category) {
       .then((data) => {
         console.log("Fetched data for category typeId:", typeId);
         console.log("API Raw Response", data);
-        const places = data;
+        const places = data.places;
         console.log("Places : ", places);
 
         if (!places || !Array.isArray(places)) {
