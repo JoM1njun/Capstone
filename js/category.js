@@ -24,7 +24,7 @@ function searchPlaces(category) {
     console.log("typeId : ", category);
     fetch(
       `https://capstone-back.fly.dev/api/category?query=` +
-        encodeURIComponent(category)
+        encodeURIComponent(typeId)
     )
       .then((response) => response.json())
       .then((data) => {
