@@ -49,9 +49,22 @@ function showFloorMap(place) {
     console.log("층 수 : ", floor);
 
     button.innerText = floor;
-    button.onclick = function () {
+    button.onclick = async function () {
       const floorMap = document.getElementById("floorMap");
       const currentFloor = floor;
+
+      // 이미지 경로 유효성 검사
+      try {
+        const res = await fetch(imagePath, { method: "HEAD" });
+        if (!res.ok) {
+          alert(`${floor}의 이미지 파일이 존재하지 않습니다.`);
+          return; // 여기서 중단!
+        }
+      } catch (err) {
+        alert(`${floor}의 이미지 파일을 불러오는 중 오류가 발생했습니다.`);
+        console.error(err);
+        return; // 중단
+      }
 
       if (imagePath.endsWith(".svg")) {
         // SVG 파일인 경우
