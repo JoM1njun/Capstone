@@ -19,6 +19,7 @@ function searchPlaces(category) {
   };
 
   const typeId = categoryToTypeId[category];
+  console.log("typeId : ", typeId);
 
   if (category) {
     console.log("typeId : ", category);
