@@ -146,7 +146,14 @@ function showFloorMap(place) {
     console.warn("⚠️ 표시할 층이 없음!");
   }
 
-  // 모달 표시
+  const availableFloors = Object.entries(place.floors).filter(([floor, path]) => path && path.endsWith(".svg"));
+
+  // 이미지가 하나도 없는 경우 경고만 표시하고 함수 종료
+  if (availableFloors.length === 0) {
+    alert("해당 건물의 층별 이미지가 존재하지 않습니다.");
+    return; // 모달 띄우지 않음
+  }
+    // 모달 표시
   document.getElementById("floorMapContainer").style.display = "flex";
 }
 
