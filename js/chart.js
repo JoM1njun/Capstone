@@ -10,30 +10,40 @@ async function chart(itemId) {
 
     try {
         const response = await fetch(`https://capstone-back.fly.dev/api/management/movement/${itemId}`);
-        const json = await response.json();
+        const semsors = await response.json();
 
-        const data = {
-            labels: json.labels,
-            datasets: [
-                {
-                    label: `${json.name} 기록`,
-                    data: json.values,
-                    borderColor: "rgba(75, 192, 192, 1)",
-                    backgroundColor: "rgba(75, 192, 192, 0.2)",
-                    fill: true,
-                    tension: 0.7,
-                    pointBackgroundColor: "red", // point 색상
-                    pointBorderColor: "black",
-                    pointRadius: 4, // 점 크기
-                    pointHoverRadius: 5,
-                    pointStyle: "circle", // 'rect', 'triangle', 'rectRounded' 등 가능
-                },
-            ],
-        };
+        const sensors = await response.json();
+
+        const allTimestampsSet = new Set();
+        sensors.forEach(sensor => {
+            sensor.data.forEach(entry => allTimestampsSet.add(entry.shake_date));
+        });
+
+        const allTimestamps = Array.from(allTimestampsSet).sort();
+
+        const datasets = sensors.map(sensor => {
+            const dataMap = new Map(sensor.data.map(entry => [entry.shake_date, entry.status]));
+
+            const alignedData = allTimestamps.map(ts => dataMap.has(ts) ? dataMap.get(ts) : null); // missing은 null
+
+            return {
+                label: `${sensor.name} 기록`,
+                data: alignedData,
+                borderColor: "rgba(75, 192, 192, 1)",
+                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                fill: true,
+                tension: 0.7,
+                pointBackgroundColor: "red", // point 색상
+                pointBorderColor: "black",
+                pointRadius: 4, // 점 크기
+                pointHoverRadius: 5,
+                pointStyle: "circle", // 'rect', 'triangle', 'rectRounded' 등 가능
+            };
+        });
 
         const config = {
             type: "line",
-            data: data,
+            data: datasets,
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
