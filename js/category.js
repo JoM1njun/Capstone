@@ -33,14 +33,11 @@ function searchPlaces(category) {
         console.log("API Raw Response", data);
         const places = data.places;
         console.log("Places : ", places);
-
-        if (!data.places || !Array.isArray(data.places)) {
-          const message = data.error || "알 수 없는 오류가 발생했습니다.";
-        alert(`[${category}] ${message}`);
-        return;
-      }
+        console.log("places 타입 확인:", typeof places);
+        console.log("places isArray?:", Array.isArray(places));
 
         if (!places || !Array.isArray(places)) {
+          const message = data.error || "장소 목록을 불러오는데 실패하였습니다.";
           alert(`[${category}] 카테고리에서 찾을 수 있는 장소가 없습니다.`);
           return;
         }
