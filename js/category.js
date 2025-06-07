@@ -28,9 +28,13 @@ function searchPlaces(category) {
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log("Received : ", data);
+        console.log("API Raw Response", data);
         const places = data.places; // places로 수정
         console.log("Places : ", places);
+
+        const places = Array.isArray(data) ? data :
+                 data.places ? data.places :
+                 data.data?.places;
 
         if (!places || !Array.isArray(places)) {
           alert(`[${category}] 카테고리에서 찾을 수 있는 장소가 없습니다.`);
