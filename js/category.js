@@ -34,6 +34,12 @@ function searchPlaces(category) {
         const places = data.places;
         console.log("Places : ", places);
 
+        if (!data.places || !Array.isArray(data.places)) {
+          const message = data.error || "알 수 없는 오류가 발생했습니다.";
+        alert(`[${category}] ${message}`);
+        return;
+      }
+
         if (!places || !Array.isArray(places)) {
           alert(`[${category}] 카테고리에서 찾을 수 있는 장소가 없습니다.`);
           return;
