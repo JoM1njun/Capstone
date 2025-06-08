@@ -126,6 +126,13 @@ function showDetailView(item) {
   const content = document.getElementById("detail-content");
   content.dataset.itemId = item.id;
 
+  let expectedDate = new Date(item.shake_date);
+  if (item.status === 1) {
+    expectedDate.setMonth(expectedDate.getMonth() + 1);
+  }
+
+  const displayExpectedDate = formatDate(expectedDate);
+
   content.innerHTML = `
         <div class="detail-header">
             <h3>${item.name} 상세 정보</h3>
@@ -144,7 +151,7 @@ function showDetailView(item) {
             <p><strong>종류 :</strong> ${item.type}</p>
             <p><strong>제조일자 :</strong> ${formatDate(item.date)}</p>
             <p><strong>위치 :</strong> ${item.location}</p>
-            <p><strong>희석된 날짜 :</strong> ${formatDate(item.shake_date)}</p>
+            <p><strong>희석 예정 날짜 :</strong> ${displayExpectedDate}</p>
         </div>
         <div class="chart-container">
             <canvas id="movementChart"></canvas>
