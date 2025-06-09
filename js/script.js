@@ -31,7 +31,8 @@ const API_BASE_URL = "https://capstone-back.fly.dev/api";
 // 전역 변수 (필요시)
 let map,
   userMarker = [],
-  infoWindows = [];
+  infoWindows = [],
+  defaultMarkers = [];
 let managementData = []; // DB 데이터 가져올 용도
 let currentViewBox; // SVG Pan & Zoom을 위한 전역 변수
 
