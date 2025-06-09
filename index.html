@@ -125,13 +125,31 @@
                         <h1 data-lang-ko="시설 데이터 현황" data-lang-en="Facility Data Status">시설 데이터 현황</h1>
                     </div>
 
-                    <div class="accordion-container">
-                        </div>
-                    <div id="data-pagination" style="text-align: center; margin-top: 20px;"></div>
+                    <div class="accordion-container"></div>
+<!--                     <div id="data-pagination" style="text-align: center; margin-top: 20px;"></div> -->
                 </div>
                 <div id="detail-view" class="hidden">
                     <div id="detail-container">
-                        <div id="detail-content"></div>
+                        <div id="detail-content">
+                            <div class="detail-header">
+                                <h3>상세 정보</h3>
+                                <div class="button_group">
+                                    <button class="edit-btn" onclick="toggleMenu(this)">
+                                        <span class="material-symbols-outlined">more_vert</span>
+                                    </button>
+                                    <div class="settings-menu hidden">
+                                        <button class="edit-action-btn" data-lang-ko="수정" data-lang-en="Edit">수정</button>
+                                        <button class="save-btn hidden" data-lang-ko="저장" data-lang-en="Save">저장</button>
+                                        <button class="delete-action-btn" data-lang-ko="삭제" data-lang-en="Delete">삭제</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="detail-body">
+                                </div>
+                            <div class="chart-container">
+                                <canvas id="movementChart"></canvas>
+                            </div>
+                        </div>
                         <button id="back-button">
                             <img src="assets/management/back.svg" alt="뒤로가기">
                         </button>
