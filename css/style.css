@@ -1175,7 +1175,7 @@ body.dark-mode .edit-btn:hover {
 .settings-menu {
     position: absolute;
     top: 100%; /* 점 3개 아이콘 바로 아래 */
-    right: 0; 
+    right: 15px; 
     background: white;
     border: 1px solid #ddd;
     border-radius: 10px;
