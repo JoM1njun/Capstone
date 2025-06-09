@@ -227,12 +227,14 @@ function showDetailView(item) {
 
 function toggleMenu(button) {
   document.querySelectorAll(".settings-menu").forEach((menu) => {
-    if (menu !== button.nextElementSibling) {
       menu.classList.add("hidden");
-    }
   });
-  const menu = button.nextElementSibling;
-  menu.classList.toggle("hidden");
+  const menu = button.parentNode.querySelector(".settings-menu");
+  if (menu) {
+    menu.classList.toggle("hidden");
+  } else {
+    console.error("settings-menu not found near button:", button);
+  }
 }
 
 async function editRow(button) {
