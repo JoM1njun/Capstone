@@ -26,7 +26,7 @@ async function loadMarker() {
         x: marker.x,
         y: marker.y,
         name: marker.name,
-        icon: "/assets/images/소화기.png",
+        icon: "/assets/category/소화기.png",
       });
     });
 
