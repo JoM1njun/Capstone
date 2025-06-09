@@ -1,17 +1,14 @@
-// 서버 연결 확인을 위한 부분 (없어도 됨)
-window.onload = function () {
-  fetch("https://capstone-back.fly.dev/api/db-connect")
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.status === "success") {
-        document.getElementById("db-status").innerHTML = "DB Connected";
-      } else {
-        document.getElementById("db-status").innerHTML =
-          "Connect Failed" + data.message;
-      }
-    })
-    .catch((error) => {
-      document.getElementById("db-status").innerHTML =
-        "서버에 접근 할 수 없음" + error;
-    });
-};
+async function checkDbConnection() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/db-connect`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    if (data.status === "success") {
+      console.log("DB Connected:", data.time);
+    } else {
+      console.error("DB Connection Failed:", data.message);
+    }
+  } catch (error) {
+    console.error("Failed to connect to server:", error);
+  }
+}
