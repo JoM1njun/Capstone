@@ -48,6 +48,10 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("resize", setVhVwUnit); // Recalculate on resize
   window.addEventListener("orientationchange", setVhVwUnit); // Recalculate on orientation change
 
+  // 초기 언어 설정 (페이지 로드 시 localStorage 또는 한국어로 설정)
+  const initialLang = localStorage.getItem("currentLanguage") || "ko";
+  window.setLanguage(initialLang);
+
   // 다크 모드 초기 설정
   window.toggleDarkMode();
 
