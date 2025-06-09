@@ -234,18 +234,10 @@ function showDetailView(item) {
   }`;
 
   detailBody.innerHTML = `
-        <p><strong><span data-lang-ko="종류" data-lang-en="Type">종류</span> :</strong> ${
-          item.type
-        }</p>
-        <p><strong><span data-lang-ko="제조일자" data-lang-en="Manufacturing Date">제조일자</span> :</strong> ${formatDate(
-          item.date
-        )}</p>
-        <p><strong><span data-lang-ko="위치" data-lang-en="Location">위치</span> :</strong> ${
-          item.location
-        }</p>
-        <p><strong><span data-lang-ko="희석된 날짜" data-lang-en="Dilution Date">희석된 날짜</span> :</strong> ${formatDate(
-          item.shake_date
-        )}</p>
+        <p><strong><span data-lang-ko="종류" data-lang-en="Type">종류</span> :</strong> ${item.type}</p>
+        <p><strong><span data-lang-ko="제조일자" data-lang-en="Manufacturing Date">제조일자</span> :</strong> ${formatDate(item.date)}</p>
+        <p><strong><span data-lang-ko="위치" data-lang-en="Location">위치</span> :</strong> ${item.location}</p>
+        <p><strong><span data-lang-ko="희석된 날짜" data-lang-en="Dilution Date">희석된 날짜</span> :</strong> ${formatDate(item.shake_date)}</p>
     `;
 
   // 저장 버튼 숨김, 수정 버튼 보임
