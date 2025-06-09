@@ -380,7 +380,6 @@ body.dark-mode .notification-dropdown .no-notifications-message {
     flex-direction: column; /* 카테고리 버튼 위로 오도록 flex-direction 설정 */
     justify-content: center;
     align-items: center;
-    background-color: transparent;
 }
 
 /* 기존 style.css의 .map-area 대신 #map에 직접 스타일 적용 */
@@ -405,6 +404,7 @@ body.dark-mode .notification-dropdown .no-notifications-message {
     padding: 10px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
 }
 
 /* map-controls 내부 버튼에 아이콘과 텍스트를 가로로 정렬하고 간격 주기 */
