@@ -1,196 +1,137 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // 모든 카테고리 버튼에 이벤트 리스너 등록
-    const categoryButtons = document.querySelectorAll(".category-btn");
-    categoryButtons.forEach((button) => {
-        button.addEventListener("click", function () {
-            const category = this.getAttribute("data-query");
-            console.log("Clicked category:", category);
-            searchPlaces(category);
-        });
-    });
+// Category Buttons
+// -----------------------------------------------------------
+document.querySelectorAll(".map-controls .control-btn").forEach((button) => {
+  button.addEventListener("click", function () {
+    const category = this.getAttribute("data-query");
+    console.log("Clicked category:", category);
+    document
+      .querySelectorAll(".map-controls .control-btn")
+      .forEach((btn) => btn.classList.remove("active"));
+    this.classList.add("active");
+    searchPlaces(category);
+  });
 });
 
 function searchPlaces(category) {
-    var activemarker = null;
+  const categoryToTypeId = {
+    소화기: 1,
+    소화전: 2,
+    AED: 3,
+  };
 
-    const categoryToTypeId = {
-        소화기: 1,
-        소화전: 2,
-        AED: 3,
-    };
+  const typeId = categoryToTypeId[category];
+  if (!typeId) {
+    console.warn(`Unknown category: ${category}`);
+    alert(`알 수 없는 카테고리: ${category}`);
+    return;
+  }
 
-    const typeId = categoryToTypeId[category];
-    console.log("typeId : ", typeId);
+  if (!map) {
+    console.error("Kakao Map is not initialized. Cannot search places.");
+    alert(
+      "지도가 준비되지 않아 장소를 검색할 수 없습니다. 잠시 후 다시 시도해주세요."
+    );
+    return;
+  }
 
-    if (category) {
-        console.log("typeId : ", category);
-        fetch(
-            `https://capstone-back.fly.dev/api/category?type=${typeId}`
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                console.log("Fetched data for category typeId:", typeId);
-                console.log("API Raw Response", data);
-                const places = data.places;
-                console.log("Places : ", places);
-                console.log("places 타입 확인:", typeof places);
-                console.log("places isArray?:", Array.isArray(places));
+  fetch(`${API_BASE_URL}/category?type=${typeId}`)
+    .then((response) => {
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      return response.json();
+    })
+    .then((data) => {
+      const places = data.places;
 
-                if (!Array.isArray(places)) {
-                    // 혹시 data.places가 undefined일 때 data 자체가 배열인지도 확인
-                    if (Array.isArray(data)) {
-                        places = data;
-                    } else {
-                        alert("장소 데이터가 올바르지 않습니다.");
-                        return;
-                    }
-                }
+      userMarker.forEach((obj) => {
+        if (obj.infoWindow) {
+          obj.infoWindow.close();
+        }
+        if (obj.marker) {
+          obj.marker.setMap(null);
+        }
+      });
+      userMarker = [];
 
-                // 기존 마커와 infoWindow 제거
-                userMarker.forEach((obj) => {
-                    if (obj.infoWindow) {
-                        obj.infoWindow.close();
-                    }
-                    if (obj.marker) {
-                        obj.marker.setMap(null);
-                    }
-                });
-                userMarker = [];
+      infoWindows.forEach((iw) => iw.close());
+      infoWindows = [];
 
-                // 기존 infoWindows도 초기화
-                infoWindows.forEach((iw) => iw.close());
-                infoWindows = [];
+      if (window.innerWidth <= 768) {
+        map.setLevel(4);
+      } else {
+        map.setLevel(3);
+      }
 
-                if (window.innerWidth <= 768) {
-                    map.setLevel(4);
-                } else {
-                    map.setLevel(3);
-                }
+      if (places && places.length > 0) {
+        places.forEach((place, index) => {
+          if (
+            !place ||
+            typeof place.latitude !== "number" ||
+            typeof place.longitude !== "number"
+          ) {
+            console.warn(`잘못된 place 데이터 [index: ${index}]`, place);
+            return;
+          }
 
-                if (places && places.length > 0) {
-                    try {
-                        places.forEach((place, index) => {
-                            if (!place || typeof place.latitude !== "number" || typeof place.longitude !== "number") {
-                                console.warn(`잘못된 place 데이터 [index: ${index}]`, place);
-                                return; // skip this iteration
-                            }
-                            
-                            console.log("위치 : ", place.latitude, place.longitude);
-                            let placeLocation = new kakao.maps.LatLng(
-                                place.latitude,
-                                place.longitude
-                            );
+          let placeLocation = new kakao.maps.LatLng(
+            place.latitude,
+            place.longitude
+          );
+          let markerImage = markerCache.category[category];
 
-                            let markerImage;
+          let Marker = new kakao.maps.Marker({
+            position: placeLocation,
+            map: map,
+            image: markerImage,
+            clickable: true,
+          });
 
-                            if (place.type === 1) {
-                                markerImage = new kakao.maps.MarkerImage(
-                                    "assets/category/소화기.svg",
-                                    new kakao.maps.Size(30, 30),
-                                    {
-                                        offset: new kakao.maps.Point(15, 15),
-                                    }
-                                );
-                            } else if (place.type === 2) {
-                                markerImage = new kakao.maps.MarkerImage(
-                                    "assets/category/소화전.svg",
-                                    new kakao.maps.Size(30, 30),
-                                    {
-                                        offset: new kakao.maps.Point(15, 15),
-                                    }
-                                );
-                            } else if (place.type === 3) {
-                                markerImage = new kakao.maps.MarkerImage(
-                                    "assets/category/구급상자.svg",
-                                    new kakao.maps.Size(30, 30),
-                                    {
-                                        offset: new kakao.maps.Point(15, 15),
-                                    }
-                                );
-                            }
+          let content = `
+                        <div class="info-window">
+                            <h4 style="font-size: 14px;">${place.name}</h4>
+                            <p style="font-size: 12px;">
+                                운영시간 : 정보 없음 <br>
+                                전화번호 : 정보 없음 <br>
+                                위치 : ${place.name}
+                            </p>
+                        </div>`;
 
-                            let Marker = new kakao.maps.Marker({
-                                position: placeLocation,
-                                map: map,
-                                image: markerImage,
-                                clickable: true,
-                            });
+          let infoWindow = new kakao.maps.InfoWindow({
+            content: content,
+            zIndex: 1,
+          });
 
-                            let content = `
-                      <div class="info-window">
-                          <h4 style="
-                          font-size: ${mobile ? "12px" : "14px"};
-                          ">${place.name}</h4>
-                          <p style="
-                          font-size: ${mobile ? "10px" : "12px"};
-                          ">
-                          운영시간 : ${place.hours} <br>
-                          전화번호 : ${place.phone
-                                    ? `<a href="tel:${place.phone.replace(
-                                        /-/g,
-                                        " "
-                                    )}">${place.phone}</a>`
-                                    : "정보 없음"
-                                }<br>
-                          위치 : ${place.location} </p>
-                      </div>`;
+          Marker.infoWindow = infoWindow;
+          infoWindows.push(infoWindow);
 
-                            let infoWindow = new kakao.maps.InfoWindow({
-                                content: content,
-                                zIndex: 1,
-                            });
+          userMarker.push({
+            marker: Marker,
+            infoWindow: infoWindow,
+          });
 
-                            Marker.infoWindow = infoWindow;
-                            infoWindows.push(infoWindow);
+          kakao.maps.event.addListener(Marker, "click", function () {
+            infoWindows.forEach((iw) => iw.close());
+            infoWindow.open(map, Marker);
 
-                            userMarker.push({
-                                marker: Marker,
-                                infoWindow: infoWindow,
-                            });
+            if (window.innerWidth <= 768) {
+              map.setLevel(3);
+            } else {
+              map.setLevel(2);
+            }
+            map.panTo(Marker.getPosition());
+          });
+          map.panTo(Marker.getPosition());
+        });
 
-                            // 마커 클릭 시 기존 열린 창 닫고 해당 창 열기
-                            kakao.maps.event.addListener(Marker, "click", function () {
-                                // 모든 마커의 infoWindow 닫기
-                                infoWindows.forEach((iw) => iw.close());
-
-                                // 클릭한 마커의 infoWindow 열기
-                                infoWindow.open(map, Marker);
-
-                                if (activemarker) {
-                                    activemarker.setImage(markerImage);
-                                }
-                                Marker.setImage(redmarkerImage);
-                                activemarker = Marker;
-
-                                if (window.innerWidth <= 768) {
-                                    map.setLevel(3);
-                                } else {
-                                    map.setLevel(2);
-                                }
-                                map.panTo(Marker.getPosition());
-                            });
-                            map.panTo(Marker.getPosition());
-                        });
-                        // 지도 클릭 시 모든 마커를 파란색으로 변경
-                        kakao.maps.event.addListener(map, "click", function () {
-                            if (activemarker) {
-                                activemarker.setImage(markerImage);
-                                activemarker = null;
-                            }
-                            infoWindows.forEach((iw) => iw.close());
-                        });
-                    } catch (e) {
-                        console.error("마커 표시 중 오류 발생:", e);
-                        alert("장소를 지도에 표시하는 중 오류가 발생하였습니다.");
-                    }
-                } else {
-                    alert(`[${category}] 카테고리에서 찾을 수 있는 장소가 없습니다.`);
-                }
-            })
-            .catch((err) => {
-                console.error(`[${category}] API 호출 오류`, err);
-            });
-    } else {
-        alert("카테고리를 선택하세요.");
-    }
+        kakao.maps.event.addListener(map, "click", function () {
+          infoWindows.forEach((iw) => iw.close());
+        });
+      } else {
+        alert(`[${category}] 카테고리에서 찾을 수 있는 장소가 없습니다.`);
+      }
+    })
+    .catch((err) => {
+      console.error(`[${category}] API 호출 오류`, err);
+      alert(`[${category}] 카테고리 데이터를 불러오는 중 오류가 발생했습니다.`);
+    });
 }
