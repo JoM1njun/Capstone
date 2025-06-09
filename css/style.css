@@ -423,7 +423,8 @@ body.dark-mode .notification-dropdown .no-notifications-message {
 }
 
 .map-controls .control-btn:hover {
-    background-color: #f0f0f0;
+    background-color: #40E0D0;
+    border-color: #40E0D0;
 }
 
 /* .map-controls .control-btn.active {
