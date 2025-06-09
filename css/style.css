@@ -1192,7 +1192,16 @@ body.dark-mode .edit-btn:hover {
 }
 
 .button_group {
-  position: relative;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: absolute; /* #back-button 아래에 위치시키기 위해 absolute 사용 */
+    top: 40px; /* back-button의 top(0px) + back-button 높이(40px) + 간격(10px) = 50px 로 설정해봅시다.
+                 혹은 top: (back-button의 높이 + back-button의 top 값) + 원하는 간격 */
+    right: 0px; /* #back-button과 동일한 오른쪽 정렬 (detail-view의 right padding) */
+    flex-shrink: 0; /* 공간이 부족해도 축소되지 않도록 */
+    z-index: 10; /* 메뉴가 다른 요소 위에 오도록 */
 }
 
 body.dark-mode .settings-menu {
