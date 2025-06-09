@@ -77,7 +77,7 @@ async function initKakaoMap() {
       userMarker.push( markerObj );
       defaultMarkers.push( markerObj );
 
-      return { marker, place };
+      return { marker: markerObj.marker, place };
     });
 
     markersOnMap.forEach(({ marker, place }) => {
