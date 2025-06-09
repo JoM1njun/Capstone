@@ -412,7 +412,7 @@ body.dark-mode .notification-dropdown .no-notifications-message {
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background: white;
+    background: transparent;
     border: 1px solid #ddd;
     border-radius: 20px; /* 둥근 버튼 */
     cursor: pointer;
@@ -426,12 +426,12 @@ body.dark-mode .notification-dropdown .no-notifications-message {
     background-color: #f0f0f0;
 }
 
-.map-controls .control-btn.active {
+/* .map-controls .control-btn.active {
     background-color: #40E0D0;
     color: white;
     border-color: #40E0D0;
     box-shadow: 0 2px 5px rgba(64, 224, 208, 0.4);
-}
+} */
 
 /* 추가된 이미지 아이콘 스타일 */
 .map-controls .control-icon {
