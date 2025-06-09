@@ -1413,7 +1413,7 @@ svg:active {
 
 /* Helper class for hidden elements */
 .hidden {
-    display: none !important;
+    display: none;
 }
 
 /* Adjust main-content padding for consistent look */
