@@ -192,32 +192,98 @@ function showDetailView(item) {
     return;
   }
 
+  // content.dataset.itemId = item.id;
+
+  // content.innerHTML = `
+  //       <div class="detail-header">
+  //           <h3>${item.name} 상세 정보</h3>
+  //           <div class="button_group">
+  //               <button onclick="toggleMenu(this)" class="edit-btn">
+  //                   <span class="material-symbols-outlined">more_vert</span>
+  //               </button>
+  //               <div class="settings-menu hidden">
+  //                   <button onclick="editRow(this)">수정</button>
+  //                   <button class="save-btn hidden">저장</button>
+  //                   <button onclick="deleteRow(this)">삭제</button>
+  //               </div>
+  //           </div>
+  //       </div>
+  //       <div class="detail-body">
+  //           <p><strong>종류 :</strong> ${item.type}</p>
+  //           <p><strong>제조일자 :</strong> ${formatDate(item.date)}</p>
+  //           <p><strong>위치 :</strong> ${item.location}</p>
+  //           <p><strong>희석된 날짜 :</strong> ${formatDate(item.shake_date)}</p>
+  //       </div>
+  //       <div class="chart-container">
+  //           <canvas id="movementChart"></canvas>
+  //       </div>
+  //   `;
   content.dataset.itemId = item.id;
 
-  content.innerHTML = `
-        <div class="detail-header">
-            <h3>${item.name} 상세 정보</h3>
-            <div class="button_group">
-                <button onclick="toggleMenu(this)" class="edit-btn">
-                    <span class="material-symbols-outlined">more_vert</span>
-                </button>
-                <div class="settings-menu hidden">
-                    <button onclick="editRow(this)">수정</button>
-                    <button class="save-btn hidden">저장</button>
-                    <button onclick="deleteRow(this)">삭제</button>
-                </div>
-            </div>
-        </div>
-        <div class="detail-body">
-            <p><strong>종류 :</strong> ${item.type}</p>
-            <p><strong>제조일자 :</strong> ${formatDate(item.date)}</p>
-            <p><strong>위치 :</strong> ${item.location}</p>
-            <p><strong>희석된 날짜 :</strong> ${formatDate(item.shake_date)}</p>
-        </div>
-        <div class="chart-container">
-            <canvas id="movementChart"></canvas>
-        </div>
+  const detailHeader = content.querySelector(".detail-header h3");
+  const detailBody = content.querySelector(".detail-body");
+  const editBtn = content.querySelector(".edit-action-btn");
+  const saveBtn = content.querySelector(".save-btn");
+  const deleteBtn = content.querySelector(".delete-action-btn");
+  const settingsMenu = content.querySelector(".settings-menu");
+  const moreVertButton = content.querySelector(".button_group .edit-btn");
+
+  const currentLang = localStorage.getItem("currentLanguage") || "ko";
+  detailHeader.textContent = `${item.name} ${
+    currentLang === "ko" ? "상세 정보" : "Detail Information"
+  }`;
+
+  detailBody.innerHTML = `
+        <p><strong><span data-lang-ko="종류" data-lang-en="Type">종류</span> :</strong> ${
+          item.type
+        }</p>
+        <p><strong><span data-lang-ko="제조일자" data-lang-en="Manufacturing Date">제조일자</span> :</strong> ${formatDate(
+          item.date
+        )}</p>
+        <p><strong><span data-lang-ko="위치" data-lang-en="Location">위치</span> :</strong> ${
+          item.location
+        }</p>
+        <p><strong><span data-lang-ko="희석된 날짜" data-lang-en="Dilution Date">희석된 날짜</span> :</strong> ${formatDate(
+          item.shake_date
+        )}</p>
     `;
+
+  // 저장 버튼 숨김, 수정 버튼 보임
+  saveBtn.classList.add("hidden");
+  editBtn.classList.remove("hidden");
+
+  // 이벤트 리스너 재할당 및 클로저를 이용한 item 전달
+  // 점 3개 아이콘 클릭 시 메뉴 토글
+  moreVertButton.onclick = function (event) {
+    toggleMenu(this); // 'this'는 moreVertButton 자신을 가리킵니다.
+    event.stopPropagation(); // document 클릭 이벤트로 메뉴가 바로 닫히는 것을 방지
+  };
+
+  // '수정' 버튼 클릭 시 editRow 호출
+  editBtn.onclick = function () {
+    editRow(editBtn, saveBtn, detailBody);
+    settingsMenu.classList.add("hidden"); // 수정 버튼 클릭 시 메뉴 닫기
+    // 수정 모드로 전환 시 언어 설정도 다시 적용
+    window.setLanguage(localStorage.getItem("currentLanguage") || "ko");
+  };
+
+  // '저장' 버튼 클릭 시 saveDetail 호출
+  saveBtn.onclick = function () {
+    saveDetail(item.id, item, editBtn, saveBtn, detailBody);
+    settingsMenu.classList.add("hidden"); // 저장 버튼 클릭 시 메뉴 닫기
+  };
+
+  // '삭제' 버튼 클릭 시 deleteRow 호출
+  deleteBtn.onclick = function () {
+    deleteRow(item.id);
+    settingsMenu.classList.add("hidden"); // 삭제 버튼 클릭 시 메뉴 닫기
+  };
+
+  // 혹시 모를 경우를 대비해 메뉴 닫기
+  settingsMenu.classList.add("hidden");
+
+  // 상세 뷰의 텍스트에 언어 전환 적용
+  window.setLanguage(localStorage.getItem("currentLanguage") || "ko");
 
   setTimeout(() => {
     console.log("chart 함수 호출 시도:", item.id); // 디버깅 로그
