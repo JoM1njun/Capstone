@@ -64,12 +64,18 @@ async function initKakaoMap() {
       const markerImage =
         markerCache.category[place.name] || markerCache.default;
 
-      const marker = new kakao.maps.Marker({
-        position: new kakao.maps.LatLng(place.lat, place.lng),
-        map: map,
-        image: markerImage,
-      });
-      userMarker.push({ marker });
+      const markerObj = {
+        marker: new kakao.maps.Marker({
+          position: new kakao.maps.LatLng(place.lat, place.lng),
+          map: map,
+          image: markerImage,
+        }),
+        infoWindow: new kakao.maps.InfoWindow({
+          content: "...", // 인포윈도우 내용
+        }),
+      };
+      userMarker.push( markerObj );
+      defaultMarkers.push( markerObj );
 
       return { marker, place };
     });
