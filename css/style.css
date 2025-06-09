@@ -380,6 +380,7 @@ body.dark-mode .notification-dropdown .no-notifications-message {
     flex-direction: column; /* 카테고리 버튼 위로 오도록 flex-direction 설정 */
     justify-content: center;
     align-items: center;
+    background-color: transparent;
 }
 
 /* 기존 style.css의 .map-area 대신 #map에 직접 스타일 적용 */
