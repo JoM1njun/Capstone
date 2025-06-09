@@ -1,137 +1,198 @@
-let managementData = []; // DB 데이터 가져올 용도
-const itemsPerPage = 7; // 최대 페이지 수
-let currentPage = 1; // 현재 페이지
+// Data Management & Detail View
+// -----------------------------------------------------------
 
-// DB 데이터 가져오기
 async function loadManagementItems() {
-  const res = await fetch("https://capstone-back.fly.dev/api/management");
-  managementData = await res.json();
-  console.log("Data : ", managementData);
-  console.log("Test");
+  try {
+    console.log("API 호출 시작:", `${API_BASE_URL}/management`);
+    const res = await fetch(`${API_BASE_URL}/management`);
 
-  renderPage();
-}
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error(`HTTP 오류: ${res.status} ${res.statusText}`, errorText);
+      throw new Error(`서버 응답 오류: ${res.status} ${res.statusText}`);
+    }
 
-// DB Date 날짜 포맷
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  return date.toLocaleDateString("ko-KR", options); // 한국어로 포맷팅
-}
-
-function showManagement() {
-  console.log("showManagement!!");
-  // 관리 페이지 UI 초기화
-  hideAllSections(); // 다른 화면 다 숨기기
-  document.getElementById("management").style.display = "block";
-  document.getElementById("pagination").style.display = "block";
-  document.getElementById("detail-view").classList.add("hidden");
-  document.getElementById("management-container").classList.remove("hidden");
-  document.getElementById("management-list").classList.remove("hidden");
-
-  // 필요한 경우 다시 데이터를 불러오거나 페이지 초기화
-  currentPage = 1;
-
-  if (managementData.length === 0) {
-    loadManagementItems();
-  } else {
-    renderPage();
+    managementData = await res.json();
+    console.log("Management Data Loaded:", managementData);
+    renderDataManagementPage();
+  } catch (error) {
+    console.error("Failed to load management items:", error);
+    alert("데이터 관리 항목을 불러오는 데 실패했습니다: " + error.message);
   }
 }
 
-// Management 화면 표시
-function renderPage() {
-  const listContainer = document.getElementById("management-list");
-  listContainer.innerHTML = "";
+function formatDate(dateString) {
+  if (!dateString) return "정보 없음";
+  // Date 객체로 변환을 시도하고, 실패하면 원본 문자열 반환
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) {
+    // YYYY년 MM월 DD일 형식 처리 (예: 2023년 10월 26일)
+    const match = dateString.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
+    if (match) {
+      const [_, year, month, day] = match;
+      return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`;
+    }
+    return String(dateString); // 변환 실패 시 원본 문자열 그대로 반환
+  }
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return date.toLocaleDateString("ko-KR", options);
+}
 
-  const start = (currentPage - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  const currentItems = managementData.slice(start, end);
+function renderDataManagementPage() {
+  const accordionContainer = document.querySelector(".accordion-container");
+  if (!accordionContainer) {
+    console.error("Accordion container not found.");
+    return;
+  }
+  accordionContainer.innerHTML = "";
 
-  currentItems.forEach((item) => {
-    const itemDiv = document.createElement("div");
-    itemDiv.className = "management-item";
-    itemDiv.innerHTML = `
-            <span contenteditable="false">${item.name}</span>
-            <span contenteditable="false">${item.type}</span>
-            <span contenteditable="false">${formatDate(item.date)}</span>
-            <span contenteditable="false">${item.location}</span>
-            <span contenteditable="false" style="color: ${
-              parseInt(item.status) === 1 ? "green" : "red"
-            };">${parseInt(item.status) === 1 ? "ON" : "OFF"}</span>
+  // 기존 건물별 차트 인스턴스 파괴 (renderDataManagementPage가 다시 호출될 때)
+  for (const chartId in chartInstances) {
+    if (
+      chartId.startsWith("buildingChart_") &&
+      chartInstances.hasOwnProperty(chartId) &&
+      chartInstances[chartId]
+    ) {
+      chartInstances[chartId].destroy();
+      delete chartInstances[chartId];
+    }
+  }
+
+  const groupedData = managementData.reduce((acc, item) => {
+    const buildingName = item.location.split(" ")[0];
+    if (!acc[buildingName]) {
+      acc[buildingName] = [];
+    }
+    acc[buildingName].push(item);
+    return acc;
+  }, {});
+
+  Object.keys(groupedData).forEach((buildingName) => {
+    const accordionItem = document.createElement("div");
+    accordionItem.classList.add("accordion-item");
+
+    const accordionHeader = document.createElement("button");
+    accordionHeader.classList.add("accordion-header");
+    accordionHeader.innerHTML = `
+            <span class="building-name">${buildingName}</span>
+            <i class="fas fa-chevron-down"></i>
         `;
-    itemDiv.addEventListener("click", () => {
-      showDetailView(item);
+    accordionItem.appendChild(accordionHeader);
+
+    const accordionContent = document.createElement("div");
+    accordionContent.classList.add("accordion-content");
+
+    // 건물별 현황 그래프 컨테이너 추가
+    const chartContainerBuilding = document.createElement("div");
+    chartContainerBuilding.classList.add("chart-container-building");
+    const buildingChartId = `buildingChart_${buildingName.replace(/\s+/g, "")}`; // 공백 제거
+    chartContainerBuilding.innerHTML = `<canvas class="building-chart" id="${buildingChartId}"></canvas>`;
+    accordionContent.appendChild(chartContainerBuilding);
+
+    const tableContainer = document.createElement("div");
+    tableContainer.classList.add("facility-table-custom-container");
+
+    const table = document.createElement("table");
+    table.classList.add("facility-status-overview-table");
+    table.innerHTML = `
+            <thead>
+                <tr>
+                    <th data-lang-ko="Name" data-lang-en="Name">Name</th>
+                    <th data-lang-ko="Type" data-lang-en="Type">Type</th>
+                    <th data-lang-ko="Date" data-lang-en="Date">Date</th>
+                    <th data-lang-ko="Location" data-lang-en="Location">Location</th>
+                    <th data-lang-ko="Status" data-lang-en="Status">Status</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        `;
+    const tbody = table.querySelector("tbody");
+
+    groupedData[buildingName].forEach((item) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+                <td>${item.name}</td>
+                <td>${item.type}</td>
+                <td>${formatDate(item.date)}</td>
+                <td>${item.location}</td>
+                <td><span class="status-badge ${
+                  parseInt(item.status) === 1 ? "status-on" : "status-off"
+                }">${parseInt(item.status) === 1 ? "ON" : "OFF"}</span></td>
+            `;
+      row.style.cursor = "pointer";
+      // 개별 시설 항목 클릭 시 상세 뷰를 보여주는 핵심
+      row.addEventListener("click", () => {
+        console.log(`시설 항목 클릭됨: ${item.name}, ID: ${item.id}`); // 디버깅 로그
+        showDetailView(item);
+      });
+      tbody.appendChild(row);
     });
-    listContainer.appendChild(itemDiv);
+
+    tableContainer.appendChild(table);
+    accordionContent.appendChild(tableContainer);
+    accordionItem.appendChild(accordionContent);
+    accordionContainer.appendChild(accordionItem);
   });
 
-  renderPagination();
-}
+  document.querySelectorAll(".accordion-header").forEach((header) => {
+    header.addEventListener("click", function () {
+      const accordionContent = this.nextElementSibling;
+      const buildingName = this.querySelector(".building-name").textContent;
+      const buildingChartId = `buildingChart_${buildingName.replace(
+        /\s+/g,
+        ""
+      )}`;
 
-// 페이지 이동 기능
-function renderPagination() {
-  const totalPages = Math.ceil(managementData.length / itemsPerPage);
-  const pagination = document.getElementById("pagination");
-  pagination.innerHTML = "";
+      this.classList.toggle("active");
 
-  if (currentPage > 1) {
-    const prevBtn = document.createElement("button");
-    prevBtn.innerHTML = "이전 페이지"; //&lt;
-    prevBtn.onclick = () => {
-      currentPage--;
-      flashPage();
-      loadManagementItems();
-    };
-    pagination.appendChild(prevBtn);
-  }
-
-  if (currentPage < totalPages) {
-    const nextBtn = document.createElement("button");
-    nextBtn.innerHTML = "다음 페이지"; //&gt;
-    nextBtn.onclick = () => {
-      currentPage++;
-      flashPage();
-      loadManagementItems();
-    };
-    pagination.appendChild(nextBtn);
-  }
-}
-
-function flashPage() {
-  const overlay = document.createElement("div");
-  overlay.style.position = "fixed";
-  overlay.style.top = 0;
-  overlay.style.left = 0;
-  overlay.style.width = "100vw";
-  overlay.style.height = "100vh";
-  overlay.style.backgroundColor = "#f0f9ff"; // 원하는 색상
-  overlay.style.opacity = "0.6";
-  overlay.style.zIndex = "9999";
-  overlay.style.pointerEvents = "none"; // 클릭 막지 않게
-
-  document.body.appendChild(overlay);
-
-  setTimeout(() => {
-    overlay.remove();
-  }, 200); // 깜빡임 지속 시간 (밀리초)
+      if (accordionContent.style.maxHeight) {
+        accordionContent.style.maxHeight = null;
+        accordionContent.style.padding = "0 20px";
+        // 아코디언이 닫힐 때 해당 건물 차트 파괴
+        if (chartInstances[buildingChartId]) {
+          chartInstances[buildingChartId].destroy();
+          delete chartInstances[buildingChartId];
+        }
+      } else {
+        // max-height를 먼저 설정하여 콘텐츠가 보이도록 함
+        accordionContent.style.maxHeight = accordionContent.scrollHeight + "px";
+        accordionContent.style.padding = "0 20px 20px";
+        // 아코디언이 열릴 때 해당 건물 차트 렌더링
+        const itemsForBuilding = managementData.filter((item) =>
+          item.location.startsWith(buildingName)
+        );
+        // Chart.js 캔버스 ID와 buildingName을 함께 전달
+        renderBuildingChart(buildingChartId, itemsForBuilding, buildingName);
+      }
+    });
+  });
 }
 
 function showDetailView(item) {
-  console.log("Detail");
-  document.getElementById("management-container").classList.add("hidden");
-  document.getElementById("pagination").style.display = "none";
-  document.getElementById("detail-view").classList.remove("hidden");
+  console.log("showDetailView 호출됨. 항목:", item); // 디버깅 로그
 
-  const content = document.getElementById("detail-content");
-  content.dataset.itemId = item.id;
-
-  let expectedDate = new Date(item.shake_date);
-  if (item.status === 1) {
-    expectedDate.setMonth(expectedDate.getMonth() + 1);
+  if (!dataManagementPageContent) {
+    console.error("dataManagementPageContent not found.");
+    return;
   }
 
-  const displayExpectedDate = formatDate(expectedDate);
+  dataManagementPageContent
+    .querySelector(".data-management-page-content-inner")
+    ?.classList.add("hidden");
+  // display: flex !important를 적용하기 위해 classList.remove 대신 직접 스타일 변경
+  const detailViewElement = document.getElementById("detail-view");
+  if (detailViewElement) {
+    detailViewElement.style.display = "flex";
+    detailViewElement.classList.remove("hidden"); // hidden 클래스도 제거
+  }
+
+  const content = document.getElementById("detail-content");
+  if (!content) {
+    console.error("detail-content not found.");
+    return;
+  }
+
+  content.dataset.itemId = item.id;
 
   content.innerHTML = `
         <div class="detail-header">
@@ -142,7 +203,7 @@ function showDetailView(item) {
                 </button>
                 <div class="settings-menu hidden">
                     <button onclick="editRow(this)">수정</button>
-                    <button class="save-btn">저장</button>
+                    <button class="save-btn hidden">저장</button>
                     <button onclick="deleteRow(this)">삭제</button>
                 </div>
             </div>
@@ -151,7 +212,7 @@ function showDetailView(item) {
             <p><strong>종류 :</strong> ${item.type}</p>
             <p><strong>제조일자 :</strong> ${formatDate(item.date)}</p>
             <p><strong>위치 :</strong> ${item.location}</p>
-            <p><strong>희석 예정 날짜 :</strong> ${displayExpectedDate}</p>
+            <p><strong>희석된 날짜 :</strong> ${formatDate(item.shake_date)}</p>
         </div>
         <div class="chart-container">
             <canvas id="movementChart"></canvas>
@@ -159,305 +220,330 @@ function showDetailView(item) {
     `;
 
   setTimeout(() => {
-    chart(item.id); // 차트 생성 함수 호출
+    console.log("chart 함수 호출 시도:", item.id); // 디버깅 로그
+    chart(item.id);
   }, 100);
 }
 
 function toggleMenu(button) {
-  // 모든 열린 메뉴 닫기
   document.querySelectorAll(".settings-menu").forEach((menu) => {
     if (menu !== button.nextElementSibling) {
       menu.classList.add("hidden");
     }
   });
-
-  // 현재 버튼 옆 메뉴 열기
   const menu = button.nextElementSibling;
   menu.classList.toggle("hidden");
 }
 
-function editRow(button) {
+async function editRow(button) {
   const content = document.getElementById("detail-content");
   const detailBody = content.querySelector(".detail-body");
   const paragraphs = detailBody.querySelectorAll("p");
   const itemId = content.dataset.itemId;
 
-  // 원본 데이터 저장
+  // '수정' 버튼 숨기고 '저장' 버튼 보이기
+  button.classList.add("hidden");
+  const saveButton = button.nextElementSibling?.querySelector(".save-btn");
+  if (saveButton) saveButton.classList.remove("hidden");
+
   const originalData = Array.from(paragraphs).map((p) => {
     const text = p.textContent.split(": ")[1];
-    return {
-      element: p,
-      originalText: text,
-    };
+    return { element: p, originalText: text, originalHTML: p.innerHTML };
   });
 
-  fetch("https://capstone-back.fly.dev/api/places")
-    .then((res) => res.json())
-    .then((data) => {
-      const buildingList = data.map((b) => b.name);
-      const floorMap = {};
+  try {
+    const placeResponse = await fetch(`${API_BASE_URL}/places`);
+    if (!placeResponse.ok) throw new Error("Failed to fetch places data");
+    const placesData = await placeResponse.json();
 
-      data.forEach((b) => {
-        floorMap[b.name] = Array.from({ length: parseInt(b.maxfloor) }, (_, i) =>
-          (i + 1).toString());
-      });
-      
-      console.log("Building : ", buildingList);
-      console.log("Floor : ", floorMap);
+    const buildingList = placesData.map((b) => b.name);
+    const floorMap = {};
+    placesData.forEach((b) => {
+      floorMap[b.name] = Array.from({ length: parseInt(b.maxfloor) }, (_, i) =>
+        (i + 1).toString()
+      );
+    });
 
-      // 수정 모드 전환
-      paragraphs.forEach((p, index) => {
-        const text = p.textContent.split(": ")[1];
-        const strong = p.querySelector("strong").textContent;
+    paragraphs.forEach((p, index) => {
+      const text = p.textContent.split(": ")[1];
+      const strong = p.querySelector("strong")?.textContent;
 
-        // 종류는 Radio Button으로 변경
-        if (strong.includes("종류 :")) {
-          const currentType = text.trim();
-          p.innerHTML = `
-      <strong>${strong}</strong>
-      <div class="radio-group">
-        <label>
-          <input type="radio" name="type" value="소화기" ${
-            currentType === "소화기" ? "checked" : ""
-          }>
-          소화기
-        </label>
-        <label>
-          <input type="radio" name="type" value="소화전" ${
-            currentType === "소화전" ? "checked" : ""
-          }>
-          소화전
-        </label>
-        <label>
-          <input type="radio" name="type" value="AED" ${
-            currentType === "AED" ? "checked" : ""
-          }>
-          AED
-        </label>
-      </div>
-      `;
-        } else if (strong === "제조일자 :" || strong === "희석된 날짜 :") {
-          // 한국어 날짜 형식을 YYYY-MM-DD 형식으로 변환
-          try {
-            const dateStr = text.trim();
-            const [year, month, day] = dateStr
-              .match(/(\d+)년\s*(\d+)월\s*(\d+)일/)
-              .slice(1);
-            const formattedDate = `${year}-${month.padStart(
+      if (strong && strong.includes("종류 :")) {
+        const currentType = text.trim();
+        p.innerHTML = `
+                    <strong>${strong}</strong>
+                    <div class="radio-group">
+                        <label><input type="radio" name="type" value="소화기" ${
+                          currentType === "소화기" ? "checked" : ""
+                        }> 소화기</label>
+                        <label><input type="radio" name="type" value="소화전" ${
+                          currentType === "소화전" ? "checked" : ""
+                        }> 소화전</label>
+                        <label><input type="radio" name="type" value="AED" ${
+                          currentType === "AED" ? "checked" : ""
+                        }> AED</label>
+                    </div>
+                `;
+      } else if (
+        strong &&
+        (strong === "제조일자 :" || strong === "희석된 날짜 :")
+      ) {
+        try {
+          const dateStr = text.trim();
+          const match = dateStr.match(/(\d+)년\s*(\d+)월\s*(\d+)일/);
+          let formattedDate = "";
+          if (match) {
+            const [_, year, month, day] = match;
+            formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(
               2,
               "0"
-            )}-${day.padStart(2, "0")}`;
-
-            p.innerHTML = `
-          <strong>${strong}</strong>
-          <input type="date" 
-                 value="${formattedDate}" 
-                 class="edit-input date-input"
-                min="2000-01-01" 
-                max="2100-12-31">
-        `;
-          } catch (error) {
-            console.error("날짜 형식 변환 오류:", error);
-            p.innerHTML = `<strong>${strong}</strong>
-        <input type="text" value="${text}" class="edit-input">`;
+            )}`;
+          } else {
+            const d = new Date(dateStr);
+            if (!isNaN(d.getTime())) {
+              formattedDate = `${d.getFullYear()}-${String(
+                d.getMonth() + 1
+              ).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+            }
           }
-        } else if (strong.includes("위치")) {
-          const currentLocation = text.trim(); // ex) 하워드관 1층
-          const [currentBuilding, currentFloor] = currentLocation.split(" ");
 
-          // 예시: buildingList와 floorList는 전역 혹은 editRow 호출 전에 미리 받아온다고 가정
-          const buildingOptions = buildingList
-            .map(
-              (b) =>
-                `<option value="${b}" ${
-                  b === currentBuilding ? "selected" : ""
-                }>${b}</option>`
-            )
-            .join("");
+          p.innerHTML = `
+                        <strong>${strong}</strong>
+                        <input type="date" value="${formattedDate}" class="edit-input date-input" min="2000-01-01" max="2100-12-31">
+                    `;
+        } catch (error) {
+          console.error("날짜 형식 변환 오류:", error);
+          p.innerHTML = `<strong>${strong}</strong><input type="text" value="${text}" class="edit-input">`;
+        }
+      } else if (strong && strong.includes("위치")) {
+        const currentLocation = text.trim();
+        const [currentBuilding, currentFloorNum] = currentLocation.split(" ");
+        const currentFloorClean = currentFloorNum
+          ? currentFloorNum.replace("층", "")
+          : "";
 
-          const floorOptions = floorMap[currentBuilding]
+        const buildingOptions = buildingList
+          .map(
+            (b) =>
+              `<option value="${b}" ${
+                b === currentBuilding ? "selected" : ""
+              }>${b}</option>`
+          )
+          .join("");
+
+        let initialFloorOptions = "";
+        if (floorMap[currentBuilding]) {
+          initialFloorOptions = floorMap[currentBuilding]
             .map(
               (f) =>
                 `<option value="${f}" ${
-                  f === currentFloor.replace("층", "") ? "selected" : ""
+                  f === currentFloorClean ? "selected" : ""
                 }>${f}층</option>`
             )
             .join("");
+        }
 
-          p.innerHTML = `
-    <strong>${strong}</strong>
-    <div class="location-selects">
-      <select id="buildingSelect">${buildingOptions}</select>
-      <select id="floorSelect">${floorOptions}</select>
-    </div>
-  `;
+        p.innerHTML = `
+                    <strong>${strong}</strong>
+                    <div class="location-selects">
+                        <select id="buildingSelect">${buildingOptions}</select>
+                        <select id="floorSelect">${initialFloorOptions}</select>
+                    </div>
+                `;
 
-          // 건물 변경 시 해당 건물의 층수 리스트로 갱신
-          setTimeout(() => {
-            const buildingSelect = p.querySelector("#buildingSelect");
-            const floorSelect = p.querySelector("#floorSelect");
+        setTimeout(() => {
+          const buildingSelect = p.querySelector("#buildingSelect");
+          const floorSelect = p.querySelector("#floorSelect");
 
+          if (buildingSelect && floorSelect) {
             buildingSelect.addEventListener("change", () => {
               const selectedBuilding = buildingSelect.value;
-              const floors = floorMap[selectedBuilding];
-
+              const floors = floorMap[selectedBuilding] || [];
               floorSelect.innerHTML = floors
                 .map((f) => `<option value="${f}">${f}층</option>`)
                 .join("");
             });
-          }, 0);
-        } else {
-          // 나머지 필드는 텍스트 입력
-          p.innerHTML = `<strong>${
-            p.querySelector("strong").textContent
-          }</strong> 
-      <input type="text" value="${text}" class="edit-input">`;
-        }
-      });
+          }
+        }, 0);
+      } else {
+        // 나머지 필드는 텍스트 입력
+        p.innerHTML = `<strong>${
+          p.querySelector("strong")?.textContent
+        }</strong> 
+                <input type="text" value="${text}" class="edit-input">`;
+      }
     });
 
-  // 저장 버튼 설정 부분 수정
-  const saveButton = button
-    .closest(".settings-menu")
-    .querySelector(".save-btn");
-
-  const newSaveButton = saveButton.cloneNode(true); // 버튼 복제 (이벤트 리스너 초기화됨)
-  saveButton.parentNode.replaceChild(newSaveButton, saveButton); // 기존 버튼 교체
-
-  newSaveButton.addEventListener("click", () => {
-    console.log("저장 버튼 클릭됨");
-    saveDetail(itemId, originalData);
-  });
+    // saveDetail 함수에 editButton을 전달하여 saveDetail 완료 후 '수정' 버튼을 다시 표시하도록 함
+    if (saveButton) {
+      saveButton.onclick = () => saveDetail(itemId, originalData, button);
+    }
+  } catch (error) {
+    console.error("Error fetching places data for edit:", error);
+    alert("위치 정보를 불러오는 데 실패했습니다: " + error.message);
+    // 오류 발생 시 원본 데이터로 되돌리기
+    originalData.forEach((data) => {
+      if (data.element) data.element.innerHTML = data.originalHTML;
+    });
+    // '수정' 버튼 다시 보이게, '저장' 버튼 숨기게
+    button.classList.remove("hidden");
+    if (button.nextElementSibling)
+      button.nextElementSibling.classList.add("hidden");
+  }
 }
 
-// 상세 정보 저장 함수
-async function saveDetail(itemId, originalData) {
+async function saveDetail(itemId, originalData, editButton) {
   const content = document.getElementById("detail-content");
   const detailBody = content.querySelector(".detail-body");
-  const inputs = detailBody.querySelectorAll(".edit-input");
-  console.log("저장 중...");
-  console.log("itemId : ", itemId);
-  console.log("originalData : ", originalData);
 
-  // radio button 값 가져오기
   const selectedType = detailBody.querySelector(
     'input[name="type"]:checked'
   )?.value;
+  const dateInput = detailBody.querySelector('input[type="date"]');
+  const shakeDateInput = detailBody.querySelectorAll('input[type="date"]')[1];
+  const buildingSelect = detailBody.querySelector("#buildingSelect");
+  const floorSelect = detailBody.querySelector("#floorSelect");
+
   if (!selectedType) {
     alert("종류를 선택해주세요.");
     return;
   }
+  if (!dateInput?.value) {
+    alert("제조일자를 입력해주세요.");
+    return;
+  }
+  if (!shakeDateInput?.value) {
+    alert("희석된 날짜를 입력해주세요.");
+    return;
+  }
+  if (!buildingSelect?.value || !floorSelect?.value) {
+    alert("위치를 선택해주세요.");
+    return;
+  }
 
-  // 위치 정보 가져오기
-  const buildingSelect = detailBody.querySelector("#buildingSelect");
-  const floorSelect = detailBody.querySelector("#floorSelect");
-  
-  console.log("buildingSelect:", buildingSelect);
-  console.log("floorSelect:", floorSelect);
-  console.log("buildingSelect value:", buildingSelect?.value);
-  console.log("floorSelect value:", floorSelect?.value);
+  const newLocation = `${buildingSelect.value} ${floorSelect.value}층`;
 
-  const location = buildingSelect && floorSelect 
-    ? `${buildingSelect.value} ${floorSelect.value}층`
-    : originalData[2].originalText;
-    
-  console.log("location value:", location);
-
-  // 수정된 데이터 수집
   const updatedData = {
-    name: content.querySelector("h3").textContent.split(" 상세 정보")[0], // 이름은 h3 태그에서 가져옵니다
+    name: content.querySelector("h3")?.textContent.split(" 상세 정보")[0],
     type_name: selectedType,
-    date: inputs[0].value,
-    location: location,
-    shake_date: inputs[1].value,
+    date: dateInput.value,
+    location: newLocation,
+    shake_date: shakeDateInput.value,
   };
 
-  // 현재 입력된 값과 원본 데이터 비교
+  // originalData의 날짜를 YYYY-MM-DD 형식으로 통일하여 비교
+  const originalParsedValues = originalData.map((item) => {
+    const strongText = item.element.querySelector("strong")?.textContent;
+    if (strongText && strongText.includes("종류")) {
+      return item.originalText.trim();
+    } else if (
+      strongText &&
+      (strongText.includes("제조일자") || strongText.includes("희석된 날짜"))
+    ) {
+      // "YYYY년 MM월 DD일" -> "YYYY-MM-DD"로 변환
+      const match = item.originalText.match(
+        /(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/
+      );
+      if (match) {
+        const [_, year, month, day] = match;
+        return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      }
+      return item.originalText; // 변환 실패 시 원본 그대로
+    } else if (strongText && strongText.includes("위치")) {
+      return item.originalText.trim();
+    }
+    return item.originalText; // 그 외 일반 텍스트
+  });
+
   const hasChanges =
-    updatedData.type_name !== originalData[0].originalText ||
-    updatedData.date !== originalData[1].originalText ||
-    updatedData.location !== originalData[2].originalText ||
-    updatedData.shake_date !== originalData[3].originalText;
-  console.log("Updated Data Same : ", hasChanges);
+    updatedData.type_name !== originalParsedValues[0] ||
+    updatedData.date !== originalParsedValues[1] ||
+    updatedData.location !== originalParsedValues[2] ||
+    updatedData.shake_date !== originalParsedValues[3];
 
   if (!hasChanges) {
-    console.log("수정된 내용이 없습니다.");
     alert("수정된 내용이 없습니다.");
-    showManagement();
+    originalData.forEach((data) => {
+      if (data.element) data.element.innerHTML = data.originalHTML;
+    });
+    editButton.classList.remove("hidden");
+    content.querySelector(".save-btn")?.classList.add("hidden");
+    hideAllDropdowns();
     return;
   }
 
   try {
-    const response = await fetch(
-      `https://capstone-back.fly.dev/api/management/${itemId}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedData),
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/management/${itemId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData),
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.message || "서버 오류가 발생하였습니다.");
     } else {
-      const result = await response.json();
-      console.log("Update successful:", result);
-
-      // 데이터 업데이트 성공 시 목록 새로고침
-      await loadManagementItems();
-      showManagement();
+      console.log("Update successful.");
+      await loadManagementItems(); // 데이터를 다시 로드하여 최신 정보 반영
+      showPage("data-management"); // 데이터 관리 페이지로 돌아가기
       alert("데이터가 성공적으로 저장되었습니다.");
     }
   } catch (error) {
-    console.error("Error:", error);
-    alert("데이터 업데이트 중 오류가 발생했습니다.");
+    console.error("Error updating data:", error);
+    alert("데이터 업데이트 중 오류가 발생했습니다: " + error.message);
+  } finally {
+    // 수정 모드 종료 후 원래 상태로 복구
+    originalData.forEach((data) => {
+      if (data.element) data.element.innerHTML = data.originalHTML;
+    });
+    editButton.classList.remove("hidden");
+    content.querySelector(".save-btn")?.classList.add("hidden");
+    hideAllDropdowns();
   }
 }
 
 async function deleteRow(button) {
   const content = document.getElementById("detail-content");
-  const itemId = content.dataset.itemId;
+  const itemId = content?.dataset.itemId;
+
+  if (!itemId) {
+    console.error("Item ID not found for deletion.");
+    alert("삭제할 항목을 찾을 수 없습니다.");
+    return;
+  }
 
   if (confirm("정말로 이 항목을 삭제하시겠습니까?")) {
     try {
-      const response = await fetch(
-        `https://capstone-back.fly.dev/api/management/${itemId}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/management/${itemId}`, {
+        method: "DELETE",
+      });
 
-      if (response.ok) {
-        // 삭제 성공
-        await loadManagementItems(); // 목록 새로고침
-        showManagement(); // 목록 화면으로 돌아가기
-        alert("데이터가 성공적으로 삭제되었습니다.");
-      } else {
+      if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "데이터 삭제에 실패했습니다.");
+      } else {
+        console.log("Deletion successful.");
+        await loadManagementItems(); // 목록 새로고침
+        showPage("data-management"); // 목록 화면으로 돌아가기
+        alert("데이터가 성공적으로 삭제되었습니다.");
       }
     } catch (error) {
-      console.error("Error:", error);
-      alert("데이터 삭제 중 오류가 발생했습니다.");
+      console.error("Error deleting data:", error);
+      alert("데이터 삭제 중 오류가 발생했습니다: " + error.message);
     }
   }
 }
 
-document.addEventListener("click", (e) => {
-  if (!e.target.closest(".button_group")) {
-    document.querySelectorAll(".settings-menu").forEach((menu) => {
-      menu.classList.add("hidden"); // display: none 처리
-    });
+document.getElementById("back-button")?.addEventListener("click", () => {
+  // detail-view를 숨길 때 display 속성을 'none'으로 명시적으로 설정
+  const detailViewElement = document.getElementById("detail-view");
+  if (detailViewElement) {
+    detailViewElement.style.display = "none";
+    detailViewElement.classList.add("hidden"); // hidden 클래스도 다시 추가
   }
-});
 
-document.getElementById("back-button").addEventListener("click", () => {
-  document.getElementById("detail-view").classList.add("hidden");
-
-  document.getElementById("management-container").classList.remove("hidden");
-  document.getElementById("management-list").classList.remove("hidden");
-  document.getElementById("pagination").style.display = "block";
+  dataManagementPageContent
+    .querySelector(".data-management-page-content-inner")
+    ?.classList.remove("hidden");
+  renderDataManagementPage(); // 목록을 새로고침하여 최신 상태를 반영
 });
