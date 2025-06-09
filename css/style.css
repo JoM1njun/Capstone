@@ -1444,6 +1444,11 @@ svg:active {
     z-index: 1005;
 }
 
+#Rollback_btn img {
+    width: 30px;
+    height: 30px
+}
+
 #Rollback_btn:hover {
     background-color:#40E0D0;
 }
