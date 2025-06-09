@@ -43,13 +43,17 @@ function searchPlaces(category) {
     .then((data) => {
       const places = data.places;
 
-      userMarker.forEach((obj) => {
-        if (obj.infoWindow) {
-          obj.infoWindow.close();
-        }
-        if (obj.marker) {
-          obj.marker.setMap(null);
-        }
+      // userMarker.forEach((obj) => {
+      //   if (obj.infoWindow) {
+      //     obj.infoWindow.close();
+      //   }
+      //   if (obj.marker) {
+      //     obj.marker.setMap(null);
+      //   }
+      // });
+      userMarker.forEach(({ marker, infoWindow }) => {
+        infoWindow.close();
+        marker.setMap(null);
       });
       userMarker = [];
 
@@ -101,14 +105,6 @@ function searchPlaces(category) {
             zIndex: 1,
           });
 
-          Marker.infoWindow = infoWindow;
-          infoWindows.push(infoWindow);
-
-          userMarker.push({
-            marker: Marker,
-            infoWindow: infoWindow,
-          });
-
           kakao.maps.event.addListener(Marker, "click", function () {
             infoWindows.forEach((iw) => iw.close());
             infoWindow.open(map, Marker);
@@ -120,7 +116,11 @@ function searchPlaces(category) {
             }
             map.panTo(Marker.getPosition());
           });
+
           map.panTo(Marker.getPosition());
+
+          userMarker.push({ marker: Marker, infoWindow });
+          infoWindows.push(infoWindow);
         });
 
         kakao.maps.event.addListener(map, "click", function () {
@@ -135,3 +135,31 @@ function searchPlaces(category) {
       alert(`[${category}] 카테고리 데이터를 불러오는 중 오류가 발생했습니다.`);
     });
 }
+
+// 되돌리기 버튼
+function restoreDefaultMarkers() {
+  if (defaultMarkers.length === 0) {
+    alert("초기 마커 정보가 아직 로드되지 않았습니다.");
+    return;
+  }
+
+  userMarker.forEach(({ marker, infoWindow }) => {
+    if (infoWindow) infoWindow.close();
+    if (marker) marker.setMap(null);
+  });
+  userMarker = [];
+
+  document
+    .querySelectorAll(".map-controls .control-btn")
+    .forEach((btn) => btn.classList.remove("active"));
+
+  defaultMarkers.forEach(({ marker }) => {
+    marker.setMap(map);
+    userMarker.push({ marker }); // 다시 userMarker에 넣기
+  });
+}
+
+document.getElementById("Rollback_btn").addEventListener("click", () => {
+  console.log("Rollback button clicked");
+  restoreDefaultMarkers();
+});
