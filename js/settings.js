@@ -100,7 +100,7 @@ if (darkModeIconToggle) {
 let notifications = [
   {
     id: 1,
-    icon: "assets/images/소화기_black.png",
+    icon: "assets/management/black_소화기.png",
     message_ko: "하워드관 (H) 1F 1번 소화기 흔들어주세요",
     message_en: "Howard Hall (H) 1F #1 Fire Extinguisher Needs Shaking",
     read: false,
