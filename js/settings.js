@@ -1,9 +1,6 @@
 // -----------------------------------------------------------
 // 다크 모드 초기 설정 및 토글 기능 (모든 페이지에서 동작)
 // -----------------------------------------------------------
-// 초기 언어 설정 (페이지 로드 시 localStorage 또는 한국어로 설정)
-const initialLang = localStorage.getItem("currentLanguage") || "ko";
-window.setLanguage(initialLang);
 
 window.toggleDarkMode = function (activate) {
   const currentIsDarkMode = document.body.classList.contains("dark-mode");
