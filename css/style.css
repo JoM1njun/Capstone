@@ -417,7 +417,7 @@ body.dark-mode .notification-dropdown .no-notifications-message {
     border-radius: 20px; /* 둥근 버튼 */
     cursor: pointer;
     font-size: 14px;
-    color: #555;
+/*     color: #555; */
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
 }
