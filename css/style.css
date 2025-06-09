@@ -1441,7 +1441,8 @@ svg:active {
     border-radius: 25px;
     border: 1px solid #40E0D0;
     background-color: white;
-    z-index: 1005;
+    cursor: pointer;
+    z-index: 1;
 }
 
 #Rollback_btn img {
