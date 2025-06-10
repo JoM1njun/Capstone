@@ -174,6 +174,7 @@ async function chart(itemId) {
             pan: {
               enabled: true,
               mode: "xy", // x, y, 또는 xy
+              modifierKey: null
             },
             zoom: {
               wheel: {
@@ -212,7 +213,7 @@ async function chart(itemId) {
               stepSize: 1,
               color: textColor,
               callback: function (value) {
-                return value;
+                return Number.isInteger(value) ? value : '';
               },
             },
             grid: {
