@@ -171,20 +171,16 @@ function renderDataManagementPage() {
 function showDetailView(item) {
   console.log("showDetailView 호출됨. 항목:", item); // 디버깅 로그
 
-  if (!dataManagementPageContent) {
-    console.error("dataManagementPageContent not found.");
-    return;
+  const detailViewElement = document.getElementById("detail-view");
+  const dataManagementInner = dataManagementPageContent.querySelector('.data-management-page-content-inner');
+  if (!detailViewElement || !dataManagementInner) {
+      console.error("Detail view or data management inner container not found.");
+      return;
   }
 
-  dataManagementPageContent
-    .querySelector(".data-management-page-content-inner")
-    ?.classList.add("hidden");
-  // display: flex !important를 적용하기 위해 classList.remove 대신 직접 스타일 변경
-  const detailViewElement = document.getElementById("detail-view");
-  if (detailViewElement) {
-    detailViewElement.style.display = "flex";
-    detailViewElement.classList.remove("hidden"); // hidden 클래스도 제거
-  }
+  dataManagementInner.classList.add('hidden');
+  detailViewElement.style.display = 'flex'; // hidden 클래스 제거 대신 display 속성 직접 제어
+  detailViewElement.classList.remove("hidden"); // 혹시 모를 상황 대비 hidden 클래스도 제거
 
   const content = document.getElementById("detail-content");
   if (!content) {
