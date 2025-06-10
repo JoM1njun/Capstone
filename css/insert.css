@@ -43,14 +43,14 @@ img:hover {
     font-size: 50px;
     font-weight: bold;
     color: black;
-    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .message {
     margin-bottom: 50px;
     font-size: 30px;
     color: black;
-    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .guide {
