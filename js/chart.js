@@ -185,6 +185,9 @@ async function chart(itemId) {
               },
               mode: "xy", // x, y, 또는 xy
             },
+            limits: {
+              y: {min: 0, max: 5}
+            },
           },
         },
         scales: {
@@ -208,7 +211,7 @@ async function chart(itemId) {
               color: textColor,
             },
             min: 0,
-            max: data.maxValue === 0 ? 1 : data.maxValue + 1,
+            max: 5,
             ticks: {
               stepSize: 1,
               color: textColor,
@@ -224,6 +227,16 @@ async function chart(itemId) {
       },
     };
     chartInstances["movementChart"] = new Chart(ctx, config);
+
+    const originalYMin = chart.options.scales.y.min;
+    const originalYMax = chart.options.scales.y.max;
+
+    // 줌 아웃 이벤트 핸들러 예시
+    chart.resetZoom = function() {
+      chart.options.scales.y.min = originalYMin;
+      chart.options.scales.y.max = originalYMax;
+      chart.update();
+    };
 
     // 다크 모드 전환 감지 및 차트 업데이트
     if (!movementChartObserver) {
@@ -247,3 +260,11 @@ async function chart(itemId) {
     alert("차트 데이터를 불러오는 데 실패했습니다: " + error.message);
   }
 }
+
+const canvas = document.getElementById('movementChart');
+canvas.addEventListener('dblclick', function () {
+  const chart = Chart.getChart(canvas);
+  if (chart && chart.resetZoom) {
+    chart.resetZoom();
+  }
+});
