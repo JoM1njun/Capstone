@@ -228,18 +228,27 @@ async function chart(itemId) {
     };
     chartInstances["movementChart"] = new Chart(ctx, config);
     const chart = chartInstances["movementChart"];
-    
+
     const originalYMin = chart.options?.scales?.y?.min ?? 0;
     const originalYMax = chart.options?.scales?.y?.max ?? 5;
 
-    // 줌 아웃 이벤트 핸들러 예시
     chart.resetZoom = function () {
-      if (!this.options.scales?.y) 
-        return; // ✅ 안전장치
+      if (!this.options.scales?.y) {
+        console.error("y축 설정이 존재하지 않습니다.");
+        return;
+      }
       this.options.scales.y.min = originalYMin;
       this.options.scales.y.max = originalYMax;
       this.update();
     };
+
+    const canvas = document.getElementById("movementChart");
+    if (canvas) {
+      // 기존 이벤트 리스너 제거
+      canvas.removeEventListener("dblclick", handleDoubleClick);
+      // 새로운 이벤트 리스너 추가
+      canvas.addEventListener("dblclick", handleDoubleClick);
+    }
 
     // 다크 모드 전환 감지 및 차트 업데이트
     if (!movementChartObserver) {
@@ -264,10 +273,11 @@ async function chart(itemId) {
   }
 }
 
-const canvas = document.getElementById("movementChart");
-canvas.addEventListener("dblclick", function () {
-  const chart = Chart.getChart(canvas);
+// 더블 클릭 핸들러 함수를 별도로 정의
+function handleDoubleClick(event) {
+  const chart = chartInstances["movementChart"];
   if (chart && chart.resetZoom) {
+    console.log("더블 클릭 감지: 줌 초기화 실행");
     chart.resetZoom();
   }
-});
+}
