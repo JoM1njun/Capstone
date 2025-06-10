@@ -21,11 +21,11 @@ async function loadMarker() {
     data.forEach((marker) => {
       const floorkey = marker.floor + "층";
       if (!floorMarkers[floorkey]) floorMarkers[floorkey] = [];
-  
+
       // id에 'w'가 포함되어 있는지 체크
-      const iconPath = marker.id.includes('W') 
-        ? "/assets/category/소화전.png"  // w가 있으면 이 아이콘
-        : "/assets/category/소화기.png";      // w가 없으면 기본 아이콘
+      const iconPath = marker.id.includes("W")
+        ? "/assets/category/소화전.png" // w가 있으면 이 아이콘
+        : "/assets/category/소화기.png"; // w가 없으면 기본 아이콘
 
       floorMarkers[floorkey].push({
         x: marker.x,
@@ -205,6 +205,13 @@ function addMarkersToSVG(svg, floor) {
   const existingMarkers = svg.querySelectorAll(".custom-marker");
   existingMarkers.forEach((m) => m.remove());
 
+  function removeExistingInfoWindow() {
+    const existingInfoWindow = document.querySelector(".info-window");
+    if (existingInfoWindow) {
+      existingInfoWindow.remove();
+    }
+  }
+
   const markers = floorMarkers[floor] || [];
   console.log(
     `addMarkersToSVG: floor=${floor}, marker count=${markers.length}`
@@ -222,7 +229,67 @@ function addMarkersToSVG(svg, floor) {
 
     img.addEventListener("click", (e) => {
       e.stopPropagation();
-      alert(marker.name);
+      // 기존 infoWindow 제거
+      const existingInfoWindow = document.querySelector(".info-window");
+      if (existingInfoWindow) {
+        existingInfoWindow.remove();
+      }
+
+      removeExistingInfoWindow();
+
+      // 새로운 infoWindow 생성
+      const infoWindow = document.createElement("div");
+
+      infoWindow.className = "info-window";
+      infoWindow.style.cssText = `
+      position: fixed;
+      left: ${e.clientX + 8}px;
+      top: ${e.clientY + 270}px;
+      background-color: white;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      z-index: 9999;
+      min-width: 200px;
+      max-width: 300px;
+      border: 1px solid #ddd;
+      color: black;
+      `;
+
+      // infoWindow 내용 구성
+      infoWindow.innerHTML = `
+      <div style="font-weight: bold; margin-bottom: 5px;">${marker.name}</div>
+      <a href="#data-management-page-content" 
+        style="display: inline-block; 
+              padding: 5px 10px; 
+              background-color: #007bff; 
+              color: white; 
+              text-decoration: none; 
+              border-radius: 5px;"
+        target="_blank">
+        상세 정보 보기
+      </a>
+    <button onclick="this.parentElement.remove()" 
+            style="
+            float: right; 
+                   background: none; 
+                   border: none; 
+                   cursor: pointer; 
+                   font-size: 1.2em;">
+      ×
+    </button>
+    `;
+
+      console.log("InfoWindow : ", infoWindow);
+      document.body.appendChild(infoWindow);
+
+      // SVG 영역 외 클릭 시 infoWindow 닫기
+      document.addEventListener("click", function closeInfoWindow(e) {
+        if (!infoWindow.contains(e.target) && e.target !== img) {
+          infoWindow.remove();
+          document.removeEventListener("click", closeInfoWindow);
+        }
+      });
     });
 
     svg.appendChild(img);
