@@ -1068,7 +1068,7 @@ body.dark-mode #detail-view {
 #back-button {
     position: absolute;
     top: 20px;
-    right: 25px;
+    right: 24px;
     width: 40px;
     height: 40px;
     border: none;
@@ -1431,8 +1431,8 @@ svg:active {
     display: block;
     bottom: 5%;
     right: 3%;
-    width: 65px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 25px;
     border: 1px solid #40E0D0;
     background-color: white;
@@ -1441,8 +1441,8 @@ svg:active {
 }
 
 #Rollback_btn img {
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
     align-items: center;
     justify-content: center;
 }
