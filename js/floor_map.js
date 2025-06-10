@@ -1,6 +1,5 @@
 // Floor Map Functions
 // -----------------------------------------------------------
-
 function generateFloors(buildingCode, maxFloor) {
   let floors = {};
   for (let i = 1; i <= maxFloor; i++) {
