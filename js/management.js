@@ -567,7 +567,7 @@ window.toggleMenu = function(buttonElement) {
     }
 }
 
-document.addEventListener('click', function(event)) {
+document.addEventListener('click', function(event) {
   const isClickInsideSettingsMenuRelated = event.target.closest(".settings-menu") || event.target.closest(".edit-btn");
 
   if (!isClickInsideSettingsMenuRelated) {
