@@ -170,6 +170,21 @@ async function chart(itemId) {
               },
             },
           },
+          zoom: {
+            pan: {
+              enabled: true,
+              mode: "xy", // x, y, 또는 xy
+            },
+            zoom: {
+              wheel: {
+                enabled: true, // 마우스 휠로 줌
+              },
+              pinch: {
+                enabled: true, // 터치로 줌
+              },
+              mode: "xy", // x, y, 또는 xy
+            },
+          },
         },
         scales: {
           x: {
