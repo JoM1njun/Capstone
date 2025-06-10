@@ -106,7 +106,7 @@
     .insert_btn {
         width: 250px;
         left: 50%;
-        transform: translateX(50%);
+        transform: translateX(-50%);
         padding: 10px 20px;
         font-size: 20px;
         font-weight: bold;
