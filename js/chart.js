@@ -148,6 +148,40 @@ async function chart(itemId) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: "날짜",
+              color: textColor,
+            },
+            ticks: {
+              color: textColor,
+            },
+            grid: {
+              color: gridColor,
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: "움직임 (상태)",
+              color: textColor,
+            },
+            min: 0,
+            max: data.maxValue === 0 ? 1 : data.maxValue + 1,
+            ticks: {
+              stepSize: 1,
+              color: textColor,
+              callback: function (value) {
+                return Number.isInteger(value) ? value : "";
+              },
+            },
+            grid: {
+              color: gridColor,
+            },
+          },
+        },
         plugins: {
           legend: {
             display: true,
@@ -174,7 +208,7 @@ async function chart(itemId) {
             pan: {
               enabled: true,
               mode: "xy", // x, y, 또는 xy
-              modifierKey: null
+              modifierKey: null,
             },
             zoom: {
               wheel: {
@@ -186,56 +220,25 @@ async function chart(itemId) {
               mode: "xy", // x, y, 또는 xy
             },
             limits: {
-              y: {min: 0, max: 5}
-            },
-          },
-        },
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: "날짜",
-              color: textColor,
-            },
-            ticks: {
-              color: textColor,
-            },
-            grid: {
-              color: gridColor,
-            },
-          },
-          y: {
-            title: {
-              display: true,
-              text: "움직임 (상태)",
-              color: textColor,
-            },
-            min: 0,
-            max: 5,
-            ticks: {
-              stepSize: 1,
-              color: textColor,
-              callback: function (value) {
-                return Number.isInteger(value) ? value : '';
-              },
-            },
-            grid: {
-              color: gridColor,
+              y: { min: 0, max: 5 },
             },
           },
         },
       },
     };
     chartInstances["movementChart"] = new Chart(ctx, config);
-
-    const originalYMin = chart.options.scales.y.min;
-    const originalYMax = chart.options.scales.y.max;
+    const chart = chartInstances["movementChart"];
+    
+    const originalYMin = chart.options?.scales?.y?.min ?? 0;
+    const originalYMax = chart.options?.scales?.y?.max ?? 5;
 
     // 줌 아웃 이벤트 핸들러 예시
-    chart.resetZoom = function() {
-      chart.options.scales.y.min = originalYMin;
-      chart.options.scales.y.max = originalYMax;
-      chart.update();
+    chart.resetZoom = function () {
+      if (!this.options.scales?.y) 
+        return; // ✅ 안전장치
+      this.options.scales.y.min = originalYMin;
+      this.options.scales.y.max = originalYMax;
+      this.update();
     };
 
     // 다크 모드 전환 감지 및 차트 업데이트
@@ -261,8 +264,8 @@ async function chart(itemId) {
   }
 }
 
-const canvas = document.getElementById('movementChart');
-canvas.addEventListener('dblclick', function () {
+const canvas = document.getElementById("movementChart");
+canvas.addEventListener("dblclick", function () {
   const chart = Chart.getChart(canvas);
   if (chart && chart.resetZoom) {
     chart.resetZoom();
