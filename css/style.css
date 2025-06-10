@@ -1304,6 +1304,7 @@ body.dark-mode .chart-container {
 }
 
 #movementChart {
+    margin-top: 30px;
     width: 100%;
     height: 100%;
 }
