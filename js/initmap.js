@@ -13,9 +13,9 @@ async function preloadMarkerImages() {
   );
 
   const categories = {
-    소화기: "assets/images/소화기.png",
-    소화전: "assets/images/소화전.png",
-    AED: "assets/images/자동제세동기.png",
+    소화기: "assets/category/소화기.png",
+    소화전: "assets/category/소화전.png",
+    AED: "assets/category/자동제세동기.png",
   };
 
   for (const [category, path] of Object.entries(categories)) {
