@@ -280,6 +280,29 @@ function showDetailView(item) {
   }, 100);
 }
 
+window.toggleMenu = function(buttonElement) {
+    console.log("toggleMenu 함수 호출됨", buttonElement);
+    const settingsMenu = buttonElement.nextElementSibling; // button_group 내에서 nextElementSibling으로 찾음
+    console.log("찾은 settings menu:", settingsMenu);
+    
+    if (settingsMenu && settingsMenu.classList.contains('settings-menu')) {
+        settingsMenu.classList.toggle("hidden");
+        console.log("메뉴 토글됨, hidden 클래스:", settingsMenu.classList.contains('hidden'));
+    } else {
+        console.error("settings-menu를 찾을 수 없습니다");
+    }
+}
+
+document.addEventListener('click', function(event) {
+  const isClickInsideSettingsMenuRelated = event.target.closest(".settings-menu") || event.target.closest(".edit-btn");
+
+  if (!isClickInsideSettingsMenuRelated) {
+        document.querySelectorAll(".settings-menu").forEach((menu) => {
+            menu.classList.add("hidden");
+        });
+    }
+});
+
 async function editRow(editButton, saveButton, detailBody) {
     console.log("editRow 함수 호출됨");
     console.log("editButton:", editButton);
@@ -552,27 +575,4 @@ document.getElementById("back-button")?.addEventListener("click", () => {
     }
     dataManagementPageContent.querySelector('.data-management-page-content-inner')?.classList.remove('hidden');
     renderDataManagementPage(); // 목록을 새로고침하여 최신 상태를 반영
-});
-
-window.toggleMenu = function(buttonElement) {
-    console.log("toggleMenu 함수 호출됨", buttonElement);
-    const settingsMenu = buttonElement.nextElementSibling; // button_group 내에서 nextElementSibling으로 찾음
-    console.log("찾은 settings menu:", settingsMenu);
-    
-    if (settingsMenu && settingsMenu.classList.contains('settings-menu')) {
-        settingsMenu.classList.toggle("hidden");
-        console.log("메뉴 토글됨, hidden 클래스:", settingsMenu.classList.contains('hidden'));
-    } else {
-        console.error("settings-menu를 찾을 수 없습니다");
-    }
-}
-
-document.addEventListener('click', function(event) {
-  const isClickInsideSettingsMenuRelated = event.target.closest(".settings-menu") || event.target.closest(".edit-btn");
-
-  if (!isClickInsideSettingsMenuRelated) {
-        document.querySelectorAll(".settings-menu").forEach((menu) => {
-            menu.classList.add("hidden");
-        });
-    }
 });
