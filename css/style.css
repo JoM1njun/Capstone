@@ -1187,11 +1187,12 @@ body.dark-mode .edit-btn:hover {
     overflow: hidden;
     display: none; /* controlled by .hidden class */
     margin-top: 5px; /* 버튼과의 간격 */
-}
-
-.settings-menu.show {
     display: block;
 }
+
+/* .settings-menu.show {
+    
+} */
 
 .button_group {
     position: relative;
