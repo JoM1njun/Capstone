@@ -243,6 +243,7 @@ function showDetailView(item) {
   // 이벤트 리스너 재할당 및 클로저를 이용한 item 전달
   // 점 3개 아이콘 클릭 시 메뉴 토글
   moreVertButton.onclick = function (event) {
+    console.log("Icon btn Click!");
     toggleMenu(this); // 'this'는 moreVertButton 자신을 가리킵니다.
     event.stopPropagation(); // document 클릭 이벤트로 메뉴가 바로 닫히는 것을 방지
   };
