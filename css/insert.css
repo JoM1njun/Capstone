@@ -39,13 +39,14 @@ img:hover {
 
 .title {
     top: 10%;
-    margin-bottom: 200px;
+    margin-bottom: 70px;
     font-size: 50px;
     font-weight: bold;
     color: black;
 }
 
 .message {
+    margin-bottom: 100px;
     font-size: 30px;
     color: black;
 }
@@ -70,7 +71,7 @@ img:hover {
 @keyframes slide-in {
     0% {
         opacity: 0;
-        transform: translateX(100px);
+        transform: translateX(300px);
     }
     100% {
         opacity: 1;
