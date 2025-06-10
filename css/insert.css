@@ -70,6 +70,7 @@ img:hover {
     border: 1px solid #00B6FF;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
     cursor: pointer;
+    background-color: white;
 }
 
 .insert_btn:hover {
