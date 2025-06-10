@@ -1,3 +1,7 @@
+//css//
+
+/* style2.css */
+
 /* 초기화 */
 * {
     margin: 0;
@@ -294,7 +298,6 @@ body.dark-mode .notification-dropdown .dropdown-item {
 
 body.dark-mode .notification-dropdown .dropdown-item:hover {
     background-color: #444444;
-    color: #40E0D0;
 }
 
 body.dark-mode .notification-dropdown .no-notifications-message {
@@ -404,7 +407,6 @@ body.dark-mode .notification-dropdown .no-notifications-message {
     padding: 10px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    background: none;
 }
 
 /* map-controls 내부 버튼에 아이콘과 텍스트를 가로로 정렬하고 간격 주기 */
@@ -413,27 +415,26 @@ body.dark-mode .notification-dropdown .no-notifications-message {
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background-color: transparent;
+    background: white;
     border: 1px solid #ddd;
     border-radius: 20px; /* 둥근 버튼 */
     cursor: pointer;
     font-size: 14px;
-/*     color: #555; */
+    color: #555;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
 }
 
 .map-controls .control-btn:hover {
-    background-color: #40E0D0;
-    border-color: #40E0D0;
+    background-color: #f0f0f0;
 }
 
-/* .map-controls .control-btn.active {
+.map-controls .control-btn.active {
     background-color: #40E0D0;
     color: white;
     border-color: #40E0D0;
     box-shadow: 0 2px 5px rgba(64, 224, 208, 0.4);
-} */
+}
 
 /* 추가된 이미지 아이콘 스타일 */
 .map-controls .control-icon {
@@ -452,6 +453,24 @@ body.dark-mode .notification-dropdown .no-notifications-message {
 .data-management-page-content-inner {
     padding: 20px;
     flex-grow: 1; /* 사용 가능한 공간을 채우도록 */
+}
+
+/* 건물별 현황 그래프 컨테이너 (새로 추가) - 중앙 정렬 적용 */
+.chart-container-building {
+    position: relative;
+    width: 90%; /* 기존 값 유지 */
+    max-width: 700px; /* 상세 뷰 차트보다 작게 */
+    height: 250px; /* 높이 조정 */
+    margin: 20px auto; /* 상하 마진 20px, 좌우 자동 -> 중앙 정렬 */
+    padding: 15px;
+    border-radius: 12px;
+    background-color: #f8f8f8; /* 아코디언 콘텐츠와 대비 */
+    box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.05); /* 내부 그림자 */
+}
+
+body.dark-mode .chart-container-building {
+    background-color: #2c2c2e;
+    box-shadow: inset 0 1px 5px rgba(255, 255, 255, 0.1);
 }
 
 .facility-table-custom-container {
@@ -474,7 +493,7 @@ body.dark-mode .facility-table-custom-container {
     width: 100%;
     border-collapse: collapse;
     font-size: 16px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
 .facility-status-overview-table thead {
@@ -506,7 +525,7 @@ body.dark-mode .facility-status-overview-table th {
     border-bottom: 1px solid rgba(0, 0, 0, 0.04);
     color: #1d1d1f;
     font-size: 16px;
-    vertical-align: middle;
+    vertical-align: middle; /* 추가 */
     transition: color 0.4s ease, border-bottom-color 0.4s ease;
 }
 body.dark-mode .facility-status-overview-table td {
@@ -695,7 +714,7 @@ body.dark-mode #data-pagination button.active {
 
 .page-title-header {
     width: 100%;
-    text-align: center;
+    text-align: center; /* 제목 중앙 정렬 */
     margin-bottom: 20px;
 }
 
@@ -705,7 +724,7 @@ body.dark-mode #data-pagination button.active {
     font-weight: 600;
 }
 body.dark-mode .settings-page-content-inner h1, /* .settings-page-content 대신 .settings-page-content-inner로 변경 */
-body.dark-mode .page-title-header h1 { 
+body.dark-mode .page-title-header h1 {
     color: #f5f5f5;
 }
 
@@ -1015,27 +1034,19 @@ body.dark-mode #darkModeIconToggle:hover {
 
 /* Detail View Styles */
 #detail-view {
-    margin: 0; /* 부모 .page-content의 패딩을 활용하기 위해 margin 제거 */
-    padding: 20px; /* detail-view 자체의 내부 여백. 이 여백 안에 콘텐츠가 들어감 */
+    margin: 20px;
+    padding: 20px;
     border-radius: 15px;
     background-color: #ffffff;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     display: none; /* Controlled by JS .hidden class */
     flex-direction: column;
-    align-items: center; /* detail-container를 중앙 정렬 */
-    
-    /* 부모 .page-content 내에서 전체 영역을 꽉 채우도록 absolute 설정 */
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: auto;
-    height: auto;
-    
-    overflow-y: auto; /* 내용이 넘칠 경우 스크롤 */
-    
-    min-height: 450px; 
+    align-items: center;
+    position: relative;
+    min-height: 450px;
+    width: calc(100% - 40px); /* 좌우 마진 20px씩 제외한 전체 너비 */
+    max-width: 1200px; /* 최대 너비 설정 */
+    align-self: center; /* main-content 내에서 중앙 정렬 */
 }
 
 body.dark-mode #detail-view {
@@ -1044,30 +1055,29 @@ body.dark-mode #detail-view {
 }
 
 #detail-container {
-    width: 100%; /* detail-view의 내부 (padding 20px 제외)를 꽉 채움 */
-    max-width: 100%; /* detail-view의 100%를 초과하지 않도록. 이전에 1200px 설정했었으나, 이제 부모의 너비를 따르도록 */
+    width: 100%;
+    max-width: 900px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* 내부 콘텐츠 (detail-content) 왼쪽 정렬 (이미지처럼) */
-    position: relative; /* #back-button과 .button_group의 absolute 기준 */
+    align-items: center;
 }
 
 #detail-content {
-    width: 100%; /* detail-container의 100%를 차지하도록 함 */
-    padding: 0; /* detail-view의 padding을 사용하므로, 여기서는 패딩 제거 */
+    width: 100%;
+    padding: 10px;
 }
 
 #back-button {
     position: absolute;
-    top: 0px; /* detail-view의 top padding (20px)과 일치 */
-    right: 0px; /* detail-view의 right padding (20px)과 일치 */
+    top: 20px;
+    right: 20px;
     width: 40px;
     height: 40px;
     border: none;
     background-color: transparent;
     cursor: pointer;
     font-size: 24px;
-    color: #666; /* 기본 색상 */
+    color: #666;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1080,14 +1090,18 @@ body.dark-mode #detail-view {
     color: #333;
 }
 
-/* 다크 모드일 때 back-button 아이콘 흰색으로 변경 */
 body.dark-mode #back-button {
-    color: #f5f5f5; /* 흰색으로 변경 */
+    color: #ccc;
 }
 
 body.dark-mode #back-button:hover {
     background-color: #444;
     color: #f5f5f5;
+}
+
+/* 다크 모드일 때 back.svg 이미지를 흰색으로 변환 */
+body.dark-mode #back-button img {
+    filter: invert(100%);
 }
 
 #back-button img {
@@ -1098,35 +1112,29 @@ body.dark-mode #back-button:hover {
 
 .detail-header {
     display: flex;
-    justify-content: space-between; /* 제목과 버튼 그룹을 양 끝으로 정렬 */
-    align-items: center;
-    width: 100%; /* detail-content의 100% 너비 */
+    justify-content: space-between;
+    align-items: flex-start; /* 아이콘과 제목의 세로 정렬 기준 변경 */
+    width: 100%;
     margin-bottom: 20px;
-    /* back-button과 .button_group을 absolute로 배치했으므로 padding-right는 제거 또는 최소화 */
-    /* padding-right: 45px; 제거 */ 
+    position: relative; /* 자식 요소의 absolute 위치 기준 */
 }
 
 .detail-header h3 {
     font-size: 24px;
     color: #333;
-    text-align: left; /* 제목 왼쪽 정렬 */
-    flex-grow: 1; /* 제목이 가능한 공간을 차지하도록 */
-    margin-right: 10px; /* 버튼 그룹과의 간격 */
+    flex-grow: 1; /* 제목이 공간을 차지하도록 */
 }
 
 body.dark-mode .detail-header h3 {
     color: #f5f5f5;
 }
 
-.detail-body {
-    width: 100%; /* detail-content 내에서 100% 너비 */
-    text-align: left; /* 글은 왼쪽 정렬 */
-}
-
 .detail-body p {
     font-size: 16px;
     margin-bottom: 10px;
     color: #555;
+    display: flex; /* 레이블과 입력 필드 정렬을 위해 추가 */
+    align-items: center; /* 세로 중앙 정렬 */
 }
 
 body.dark-mode .detail-body p {
@@ -1135,6 +1143,9 @@ body.dark-mode .detail-body p {
 
 .detail-body strong {
     color: #333;
+    min-width: 110px; /* 레이블 최소 너비 확보 */
+    display: inline-block; /* 레이블과 입력 필드 간격 조절 */
+    margin-right: 10px;
 }
 
 body.dark-mode .detail-body strong {
@@ -1142,6 +1153,16 @@ body.dark-mode .detail-body strong {
 }
 
 /* Edit/Save/Delete Buttons */
+.button_group {
+    display: flex;
+    align-items: flex-end; /* 메뉴가 버튼 아래 오른쪽으로 펼쳐지도록 */
+    flex-direction: column; /* 버튼들을 세로로 정렬 */
+    gap: 5px; /* 버튼과 메뉴 간 간격 */
+    position: absolute; /* detail-header 내에서 절대 위치 지정 */
+    top: 30px; /* back-button 아래로 더 내림 */
+    right:-135px; /* back-button과 동일한 오른쪽 위치 */
+    z-index: 20; /* 다른 요소 위에 표시 */
+}
 
 
 .edit-btn {
@@ -1176,35 +1197,21 @@ body.dark-mode .edit-btn:hover {
 
 .settings-menu {
     position: absolute;
-    top: 100%; /* 점 3개 아이콘 바로 아래 */
-    right: 15px; 
+    top: 35px; /* edit-btn 아래로 내려오도록 조정 */
+    right: 0;
     background: white;
     border: 1px solid #ddd;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     z-index: 100;
-    min-width: 120px; 
+    min-width: 120px;
     overflow: hidden;
-    display: none; /* controlled by .hidden class */
-    margin-top: 5px; /* 버튼과의 간격 */
-    display: block;
+    display: block; /* Show by default, hide with .hidden class */
+    margin-top: 5px;
 }
 
-/* .settings-menu.show {
-    
-} */
-
-.button_group {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    position: absolute; /* #back-button 아래에 위치시키기 위해 absolute 사용 */
-    top: 40px; /* back-button의 top(0px) + back-button 높이(40px) + 간격(10px) = 50px 로 설정해봅시다.
-                 혹은 top: (back-button의 높이 + back-button의 top 값) + 원하는 간격 */
-    right: 0px; /* #back-button과 동일한 오른쪽 정렬 (detail-view의 right padding) */
-    flex-shrink: 0; /* 공간이 부족해도 축소되지 않도록 */
-    z-index: 10; /* 메뉴가 다른 요소 위에 오도록 */
+.settings-menu.show {
+    display: block;
 }
 
 body.dark-mode .settings-menu {
@@ -1245,12 +1252,13 @@ body.dark-mode .settings-menu button:hover {
 .detail-body input[type="text"],
 .detail-body input[type="date"],
 .detail-body select {
+    flex-grow: 1; /* 남은 공간을 채우도록 */
     padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 15px;
-    width: calc(100% - 120px); /* Adjust width */
-    margin-left: 10px;
+    width: auto; /* flex-grow에 의해 조정되므로 auto */
+    margin-left: 0; /* strong 태그와의 간격은 strong의 margin-right로 조절 */
     box-sizing: border-box;
 }
 
@@ -1266,8 +1274,14 @@ body.dark-mode .detail-body select {
     margin-right: 5px;
 }
 
+.radio-group {
+    display: flex; /* 라디오 버튼들을 가로로 정렬 */
+    gap: 20px;
+    margin-left: 10px; /* strong 태그와의 간격 */
+}
+
 .radio-group label {
-    margin-right: 20px;
+    margin-right: 0; /* flex gap으로 간격 조절 */
     color: #555;
     font-size: 15px;
 }
@@ -1285,17 +1299,16 @@ body.dark-mode .radio-group label {
 /* 그래프 컨테이너 (개별 시설 상세) */
 .chart-container {
     position: relative;
-    width: 100%; /* 부모 detail-content의 100%를 차지하도록 변경 */
-    max-width: 1000px; /* 원하는 최대 너비 */
-    height: 300px; /* 높이 유지 */
+    width: calc(100% - 20px); /* detail-view padding 20px 감안하여 조정 */
+    max-width: 800px;
+    height: 300px; /* 높이 조정 */
     margin-top: 30px;
     padding: 10px;
     border-radius: 15px;
     background-color: white;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-left: auto; /* 센터 정렬 */
-    margin-right: auto; /* 센터 정렬 */
-    display: block; 
+    margin: 30px auto 0 auto; /* 위 30px, 좌우 자동, 아래 0 -> 중앙 정렬 */
+    display: block; /* auto margin을 위해 block 레벨 요소로 설정 */
 }
 
 body.dark-mode .chart-container {
@@ -1304,28 +1317,10 @@ body.dark-mode .chart-container {
 }
 
 #movementChart {
-    margin-top: 30px;
     width: 100%;
     height: 100%;
 }
 
-/* 건물별 현황 그래프 컨테이너 (새로 추가) */
-.chart-container-building {
-    position: relative;
-    width: 90%;
-    max-width: 700px; /* 상세 뷰 차트보다 작게 */
-    height: 250px; /* 높이 유지 */
-    margin: 20px auto; /* 상하 마진 20px, 좌우 자동 */
-    padding: 15px;
-    border-radius: 12px;
-    background-color: #f8f8f8; /* 아코디언 콘텐츠와 대비 */
-    box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.05); /* 내부 그림자 */
-}
-
-body.dark-mode .chart-container-building {
-    background-color: #2c2c2e;
-    box-shadow: inset 0 1px 5px rgba(255, 255, 255, 0.1);
-}
 
 .building-chart {
     width: 100%;
@@ -1417,7 +1412,7 @@ svg:active {
 
 /* Helper class for hidden elements */
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 /* Adjust main-content padding for consistent look */
@@ -1426,7 +1421,6 @@ svg:active {
     flex-grow: 1; /* Allow content to fill space */
     display: flex;
     flex-direction: column;
-    position: relative; /* 자식 absolute 요소를 위한 부모 */
 }
 
 /* Specific adjustment for map-container to fill remaining space */
@@ -1568,10 +1562,14 @@ svg:active {
     .accordion-content .facility-table-custom-container {
         margin-bottom: 15px;
     }
+    .chart-container-building {
+        height: 220px; /* 반응형 높이 조정 */
+    }
 
     #detail-view {
         padding: 15px;
         min-height: 400px; /* 반응형에서 차트 높이 고려 */
+        width: calc(100% - 30px); /* 좌우 마진 15px씩 제외 */
     }
     #back-button {
         width: 35px;
@@ -1606,12 +1604,10 @@ svg:active {
     .radio-group label {
         font-size: 14px;
     }
-    .chart-container {
-        height: 250px;
-    }
-    #floorButtons button, #closeBtn {
-        padding: 8px 12px;
-        font-size: 14px;
+    .location-selects {
+        flex-direction: column; /* 셀렉트 박스 세로 정렬 */
+        gap: 10px;
+        margin-left: 0;
     }
 }
 
@@ -1632,23 +1628,24 @@ svg:active {
         text-align: center;
         border-radius: 20px; /* 모바일에서도 전체 둥글게 */
     }
+    /* 모바일에서는 사이드바 축소 시에도 제목과 메뉴 텍스트를 보여줌 */
     .sidebar.collapsed {
         width: 100%;
         padding: 15px 20px;
-        border-radius: 20px; 
+        border-radius: 20px;
     }
     .sidebar.collapsed .sidebar-title {
-        opacity: 1;
-        height: auto;
+        opacity: 1; /* 숨기지 않음 */
+        height: auto; /* 숨기지 않음 */
     }
     .sidebar.collapsed .menu-item span {
-        display: initial; 
+        display: initial; /* 텍스트 표시 */
     }
     .sidebar.collapsed .menu-item .menu-icon {
-        margin-right: 15px; 
+        margin-right: 15px; /* 마진 유지 */
     }
     .sidebar-toggle-btn {
-        display: none; 
+        display: none; /* 모바일에서는 토글 버튼 숨김 */
     }
 
     .sidebar-header {
@@ -1670,12 +1667,12 @@ svg:active {
     }
     .main-content {
         height: auto;
-        margin-left: 0 !important; 
+        margin-left: 0 !important;
     }
     .header {
         flex-direction: column;
         padding: 15px 20px;
-        border-radius: 15px; 
+        border-radius: 15px;
     }
     .search-container {
         width: 100%;
@@ -1710,13 +1707,13 @@ svg:active {
         width: 18px;
         height: 18px;
     }
-    #map { 
+    #map {
         height: 400px;
     }
 
     /* settings.html 반응형 (모바일) */
     .settings-card-group {
-        grid-template-columns: 1fr; 
+        grid-template-columns: 1fr;
     }
     .setting-card {
         padding: 20px;
@@ -1728,5 +1725,59 @@ svg:active {
     }
     .setting-card span {
         font-size: 16px;
+    }
+    #detail-view {
+        width: calc(100% - 20px); /* 좌우 마진 10px씩 제외 */
+    }
+    .button_group {
+        position: absolute; /* 모바일에서도 absolute 유지 */
+        top: 50px; /* back-button 아래로 내림 */
+        right: 20px; /* back-button과 동일한 오른쪽 위치 */
+        flex-direction: column; /* 세로 정렬 유지 */
+        align-items: flex-end; /* 오른쪽 정렬 유지 */
+        gap: 5px; /* 간격 유지 */
+    }
+    .detail-header {
+        flex-direction: row; /* 제목과 버튼 그룹 가로 정렬 유지 (위치만 변경) */
+        align-items: flex-start;
+        position: relative; /* 자식 요소의 absolute 위치 기준 */
+    }
+    .settings-menu {
+        top: 35px; /* edit-btn 아래로 내려오도록 조정 */
+        right: 0; /* 우측 정렬 */
+        left: auto; /* 좌측 정렬 해제 */
+        width: auto; /* 너비 자동 */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 다시 추가 */
+        border: 1px solid #ddd; /* 경계선 다시 추가 */
+        border-radius: 10px; /* 둥근 모서리 다시 추가 */
+    }
+    body.dark-mode .settings-menu { /* 다크 모드일 때 설정 다시 적용 */
+        background-color: #333333;
+        border-color: #555555;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+    .detail-body p {
+        flex-direction: column; /* 모바일에서 레이블과 입력 필드 세로 정렬 */
+        align-items: flex-start;
+    }
+    .detail-body strong {
+        margin-right: 0;
+        margin-bottom: 5px; /* 레이블 아래 간격 */
+    }
+    .detail-body input[type="text"],
+    .detail-body input[type="date"],
+    .detail-body select {
+        width: 100%; /* 너비 100% */
+        margin-left: 0;
+    }
+    .radio-group {
+        flex-direction: column; /* 라디오 버튼 세로 정렬 */
+        gap: 10px;
+        margin-left: 0;
+    }
+    .location-selects {
+        flex-direction: column; /* 셀렉트 박스 세로 정렬 */
+        gap: 10px;
+        margin-left: 0;
     }
 }
