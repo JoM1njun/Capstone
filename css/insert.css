@@ -46,8 +46,14 @@ img:hover {
 }
 
 .message {
-    margin-bottom: 100px;
+    margin-bottom: 40px;
     font-size: 30px;
+    color: black;
+}
+
+.guide {
+    margin-bottom: 30px;
+    font-size: 20px;
     color: black;
 }
 
