@@ -1433,7 +1433,7 @@ svg:active {
     display: block;
     bottom: 5%;
     right: 3%;
-    width: 60px;
+    width: 62px;
     height: 60px;
     border-radius: 25px;
     border: 1px solid #40E0D0;
@@ -1444,7 +1444,8 @@ svg:active {
 
 #Rollback_btn img {
     width: 30px;
-    height: 30px
+    height: 30px;
+    align-items: center;
 }
 
 #Rollback_btn:hover {
