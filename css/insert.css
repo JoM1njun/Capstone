@@ -45,6 +45,11 @@ img:hover {
     color: black;
 }
 
+.message {
+    font-size: 30px;
+    color: black;
+}
+
 .insert_btn {
     width: 250px;
     left: 50%;
