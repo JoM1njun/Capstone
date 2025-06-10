@@ -22,11 +22,17 @@ async function loadMarker() {
     data.forEach((marker) => {
       const floorkey = marker.floor + "층";
       if (!floorMarkers[floorkey]) floorMarkers[floorkey] = [];
+  
+      // id에 'w'가 포함되어 있는지 체크
+      const iconPath = marker.id.includes('w') 
+        ? "/assets/category/소화전.png"  // w가 있으면 이 아이콘
+        : "/assets/category/소화기.png";      // w가 없으면 기본 아이콘
+
       floorMarkers[floorkey].push({
         x: marker.x,
         y: marker.y,
         name: marker.name,
-        icon: "/assets/category/소화기.png",
+        icon: iconPath,
       });
     });
 
