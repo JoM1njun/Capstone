@@ -632,7 +632,7 @@ async function deleteRow(itemId) {
   }
 
   try {
-    const authResponse = await fetch(`${API_BASE_URL}/auth/password`, {
+    const authResponse = await fetch(`https://capstone-back.fly.dev/auth/password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
