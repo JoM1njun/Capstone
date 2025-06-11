@@ -106,21 +106,15 @@ function searchPlaces(category) {
             case 1:
               content = `
       <div class="info-window" style="color: black;">
-        <h4 style="font-size: 14px;">소화기</h4>
-        <p style="font-size: 12px;">
-          위치: ${place.name}<br>
+        <h4 style="font-size: 14px;">${place.name}</h4>
           비상 시 사용하세요.
-        </p>
       </div>`;
               break;
             case 2:
               content = `
       <div class="info-window" style="color: black;">
-        <h4 style="font-size: 14px;">소화전</h4>
-        <p style="font-size: 12px;">
-          설치 장소: ${place.name}<br>
+        <h4 style="font-size: 14px;">${place.name}</h4>
           화재 시 사용 가능.
-        </p>
       </div>`;
               break;
             case 3:
