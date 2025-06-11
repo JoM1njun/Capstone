@@ -172,14 +172,16 @@ function showDetailView(item) {
   console.log("showDetailView 호출됨. 항목:", item); // 디버깅 로그
 
   const detailViewElement = document.getElementById("detail-view");
-  const dataManagementInner = dataManagementPageContent.querySelector('.data-management-page-content-inner');
+  const dataManagementInner = dataManagementPageContent.querySelector(
+    ".data-management-page-content-inner"
+  );
   if (!detailViewElement || !dataManagementInner) {
-      console.error("Detail view or data management inner container not found.");
-      return;
+    console.error("Detail view or data management inner container not found.");
+    return;
   }
 
-  dataManagementInner.classList.add('hidden');
-  detailViewElement.style.display = 'flex'; // hidden 클래스 제거 대신 display 속성 직접 제어
+  dataManagementInner.classList.add("hidden");
+  detailViewElement.style.display = "flex"; // hidden 클래스 제거 대신 display 속성 직접 제어
   detailViewElement.classList.remove("hidden"); // 혹시 모를 상황 대비 hidden 클래스도 제거
 
   const content = document.getElementById("detail-content");
@@ -230,10 +232,18 @@ function showDetailView(item) {
   }`;
 
   detailBody.innerHTML = `
-        <p><strong><span data-lang-ko="종류" data-lang-en="Type">종류</span> :</strong> ${item.type}</p>
-        <p><strong><span data-lang-ko="제조일자" data-lang-en="Manufacturing Date">제조일자</span> :</strong> ${formatDate(item.date)}</p>
-        <p><strong><span data-lang-ko="위치" data-lang-en="Location">위치</span> :</strong> ${item.location}</p>
-        <p><strong><span data-lang-ko="희석된 날짜" data-lang-en="Dilution Date">희석된 날짜</span> :</strong> ${formatDate(item.shake_date)}</p>
+        <p><strong><span data-lang-ko="종류" data-lang-en="Type">종류</span> :</strong> ${
+          item.type
+        }</p>
+        <p><strong><span data-lang-ko="제조일자" data-lang-en="Manufacturing Date">제조일자</span> :</strong> ${formatDate(
+          item.date
+        )}</p>
+        <p><strong><span data-lang-ko="위치" data-lang-en="Location">위치</span> :</strong> ${
+          item.location
+        }</p>
+        <p><strong><span data-lang-ko="희석된 날짜" data-lang-en="Dilution Date">희석된 날짜</span> :</strong> ${formatDate(
+          item.shake_date
+        )}</p>
     `;
 
   // 저장 버튼 숨김, 수정 버튼 보임
@@ -280,299 +290,390 @@ function showDetailView(item) {
   }, 100);
 }
 
-window.toggleMenu = function(buttonElement) {
-    console.log("toggleMenu 함수 호출됨", buttonElement);
-    const settingsMenu = buttonElement.nextElementSibling; // button_group 내에서 nextElementSibling으로 찾음
-    console.log("찾은 settings menu:", settingsMenu);
-    
-    if (settingsMenu && settingsMenu.classList.contains('settings-menu')) {
-        settingsMenu.classList.toggle("hidden");
-        console.log("메뉴 토글됨, hidden 클래스:", settingsMenu.classList.contains('hidden'));
-    } else {
-        console.error("settings-menu를 찾을 수 없습니다");
-    }
-}
+window.toggleMenu = function (buttonElement) {
+  console.log("toggleMenu 함수 호출됨", buttonElement);
+  const settingsMenu = buttonElement.nextElementSibling; // button_group 내에서 nextElementSibling으로 찾음
+  console.log("찾은 settings menu:", settingsMenu);
 
-document.addEventListener('click', function(event) {
-  const isClickInsideSettingsMenuRelated = event.target.closest(".settings-menu") || event.target.closest(".edit-btn");
+  if (settingsMenu && settingsMenu.classList.contains("settings-menu")) {
+    settingsMenu.classList.toggle("hidden");
+    console.log(
+      "메뉴 토글됨, hidden 클래스:",
+      settingsMenu.classList.contains("hidden")
+    );
+  } else {
+    console.error("settings-menu를 찾을 수 없습니다");
+  }
+};
+
+document.addEventListener("click", function (event) {
+  const isClickInsideSettingsMenuRelated =
+    event.target.closest(".settings-menu") || event.target.closest(".edit-btn");
 
   if (!isClickInsideSettingsMenuRelated) {
-        document.querySelectorAll(".settings-menu").forEach((menu) => {
-            menu.classList.add("hidden");
-        });
-    }
+    document.querySelectorAll(".settings-menu").forEach((menu) => {
+      menu.classList.add("hidden");
+    });
+  }
 });
 
 async function editRow(editButton, saveButton, detailBody) {
-    console.log("editRow 함수 호출됨");
-    console.log("editButton:", editButton);
-    console.log("saveButton:", saveButton);
-    
-    // '수정' 버튼 숨기고 '저장' 버튼 보이기
-    editButton.classList.add('hidden');
-    saveButton.classList.remove('hidden');
-    
-    console.log("수정 버튼 hidden 클래스:", editButton.classList.contains('hidden'));
-    console.log("저장 버튼 hidden 클래스:", saveButton.classList.contains('hidden'));
+  console.log("editRow 함수 호출됨");
+  console.log("editButton:", editButton);
+  console.log("saveButton:", saveButton);
 
-    const originalDataElements = detailBody.querySelectorAll("p");
-    const originalContent = []; // 원본 HTML 및 값 저장 (복원용)
+  // '수정' 버튼 숨기고 '저장' 버튼 보이기
+  editButton.classList.add("hidden");
+  saveButton.classList.remove("hidden");
 
-    for (const p of originalDataElements) {
-        const strong = p.querySelector("strong");
-        if (strong) {
-            originalContent.push({
-                element: p,
-                originalHTML: p.innerHTML, // 원본 HTML 저장
-                label: strong.textContent.trim(),
-                value: p.textContent.replace(strong.textContent, '').trim()
-            });
-        }
+  console.log(
+    "수정 버튼 hidden 클래스:",
+    editButton.classList.contains("hidden")
+  );
+  console.log(
+    "저장 버튼 hidden 클래스:",
+    saveButton.classList.contains("hidden")
+  );
+
+  const originalDataElements = detailBody.querySelectorAll("p");
+  const originalContent = []; // 원본 HTML 및 값 저장 (복원용)
+
+  for (const p of originalDataElements) {
+    const strong = p.querySelector("strong");
+    if (strong) {
+      originalContent.push({
+        element: p,
+        originalHTML: p.innerHTML, // 원본 HTML 저장
+        label: strong.textContent.trim(),
+        value: p.textContent.replace(strong.textContent, "").trim(),
+      });
     }
+  }
 
-    try {
-        const placeResponse = await fetch(`${API_BASE_URL}/places`);
-        if (!placeResponse.ok) throw new Error('Failed to fetch places data');
-        const placesData = await placeResponse.json();
+  try {
+    const placeResponse = await fetch(`${API_BASE_URL}/places`);
+    if (!placeResponse.ok) throw new Error("Failed to fetch places data");
+    const placesData = await placeResponse.json();
 
-        const buildingList = placesData.map((b) => b.name);
-        const floorMap = {};
-        placesData.forEach((b) => {
-            // maxfloor가 문자열일 경우 parseInt로 변환
-            floorMap[b.name] = Array.from({ length: parseInt(b.maxfloor) }, (_, i) => (i + 1).toString());
-        });
+    const buildingList = placesData.map((b) => b.name);
+    const floorMap = {};
+    placesData.forEach((b) => {
+      // maxfloor가 문자열일 경우 parseInt로 변환
+      floorMap[b.name] = Array.from({ length: parseInt(b.maxfloor) }, (_, i) =>
+        (i + 1).toString()
+      );
+    });
 
-        const currentLang = localStorage.getItem('currentLanguage') || 'ko';
+    const currentLang = localStorage.getItem("currentLanguage") || "ko";
 
-        originalContent.forEach((dataItem) => {
-            const label = dataItem.label;
-            const value = dataItem.value;
-            const p = dataItem.element;
-            const originalKoLabel = p.querySelector('span[data-lang-ko]')?.getAttribute('data-lang-ko') || label;
-            const originalEnLabel = p.querySelector('span[data-lang-en]')?.getAttribute('data-lang-en') || label;
+    originalContent.forEach((dataItem) => {
+      const label = dataItem.label;
+      const value = dataItem.value;
+      const p = dataItem.element;
+      const originalKoLabel =
+        p.querySelector("span[data-lang-ko]")?.getAttribute("data-lang-ko") ||
+        label;
+      const originalEnLabel =
+        p.querySelector("span[data-lang-en]")?.getAttribute("data-lang-en") ||
+        label;
 
-            if (label.includes("종류") || label.includes("Type")) { // 언어에 따라 라벨이 달라질 수 있으므로 두 가지 경우 모두 체크
-                const currentType = value.trim();
-                p.innerHTML = `
-                    <strong><span data-lang-ko="${originalKoLabel}" data-lang-en="${originalEnLabel}">${currentLang === 'ko' ? originalKoLabel : originalEnLabel}</span> :</strong>
+      if (label.includes("종류") || label.includes("Type")) {
+        // 언어에 따라 라벨이 달라질 수 있으므로 두 가지 경우 모두 체크
+        const currentType = value.trim();
+        p.innerHTML = `
+                    <strong><span data-lang-ko="${originalKoLabel}" data-lang-en="${originalEnLabel}">${
+          currentLang === "ko" ? originalKoLabel : originalEnLabel
+        }</span> :</strong>
                     <div class="radio-group">
-                        <label><input type="radio" name="type" value="소화기" ${currentType === "소화기" ? "checked" : ""}> <span data-lang-ko="소화기" data-lang-en="Fire Extinguisher">소화기</span></label>
-                        <label><input type="radio" name="type" value="소화전" ${currentType === "소화전" ? "checked" : ""}> <span data-lang-ko="소화전" data-lang-en="Hydrant">소화전</span></label>
-                        <label><input type="radio" name="type" value="AED" ${currentType === "AED" ? "checked" : ""}> <span data-lang-ko="자동제세동기" data-lang-en="AED">AED</span></label>
+                        <label><input type="radio" name="type" value="소화기" ${
+                          currentType === "소화기" ? "checked" : ""
+                        }> <span data-lang-ko="소화기" data-lang-en="Fire Extinguisher">소화기</span></label>
+                        <label><input type="radio" name="type" value="소화전" ${
+                          currentType === "소화전" ? "checked" : ""
+                        }> <span data-lang-ko="소화전" data-lang-en="Hydrant">소화전</span></label>
+                        <label><input type="radio" name="type" value="AED" ${
+                          currentType === "AED" ? "checked" : ""
+                        }> <span data-lang-ko="자동제세동기" data-lang-en="AED">AED</span></label>
                     </div>
                 `;
-            } else if (label.includes("제조일자") || label.includes("희석된 날짜") || label.includes("Manufacturing Date") || label.includes("Dilution Date")) {
-                let formattedDate = "";
-                const dateMatch = value.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
-                if (dateMatch) {
-                    const [_, year, month, day] = dateMatch;
-                    formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-                } else {
-                    const d = new Date(value);
-                    if (!isNaN(d.getTime())) {
-                        formattedDate = d.toISOString().split('T')[0];
-                    } else {
-                        formattedDate = '';
-                    }
-                }
-                p.innerHTML = `
-                    <strong><span data-lang-ko="${originalKoLabel}" data-lang-en="${originalEnLabel}">${currentLang === 'ko' ? originalKoLabel : originalEnLabel}</span> :</strong>
+      } else if (
+        label.includes("제조일자") ||
+        label.includes("희석된 날짜") ||
+        label.includes("Manufacturing Date") ||
+        label.includes("Dilution Date")
+      ) {
+        let formattedDate = "";
+        const dateMatch = value.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
+        if (dateMatch) {
+          const [_, year, month, day] = dateMatch;
+          formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(
+            2,
+            "0"
+          )}`;
+        } else {
+          const d = new Date(value);
+          if (!isNaN(d.getTime())) {
+            formattedDate = d.toISOString().split("T")[0];
+          } else {
+            formattedDate = "";
+          }
+        }
+        p.innerHTML = `
+                    <strong><span data-lang-ko="${originalKoLabel}" data-lang-en="${originalEnLabel}">${
+          currentLang === "ko" ? originalKoLabel : originalEnLabel
+        }</span> :</strong>
                     <input type="date" value="${formattedDate}" class="edit-input date-input" min="2000-01-01" max="2100-12-31">
                 `;
-            } else if (label.includes("위치") || label.includes("Location")) {
-                const currentLocation = value.trim();
-                const parts = currentLocation.split(" ");
-                const currentBuilding = parts[0] || '';
-                const currentFloorNum = parts[1] ? parts[1].replace("층", "") : '';
+      } else if (label.includes("위치") || label.includes("Location")) {
+        const currentLocation = value.trim();
+        const parts = currentLocation.split(" ");
+        const currentBuilding = parts[0] || "";
+        const currentFloorNum = parts[1] ? parts[1].replace("층", "") : "";
 
-                const buildingOptions = buildingList
-                    .map((b) => `<option value="${b}" ${b === currentBuilding ? "selected" : ""}>${b}</option>`)
-                    .join("");
+        const buildingOptions = buildingList
+          .map(
+            (b) =>
+              `<option value="${b}" ${
+                b === currentBuilding ? "selected" : ""
+              }>${b}</option>`
+          )
+          .join("");
 
-                let initialFloorOptions = '';
-                if (floorMap[currentBuilding]) {
-                    initialFloorOptions = floorMap[currentBuilding]
-                        .map((f) => `<option value="${f}" ${f === currentFloorNum ? "selected" : ""}>${f}층</option>`)
-                        .join("");
-                }
+        let initialFloorOptions = "";
+        if (floorMap[currentBuilding]) {
+          initialFloorOptions = floorMap[currentBuilding]
+            .map(
+              (f) =>
+                `<option value="${f}" ${
+                  f === currentFloorNum ? "selected" : ""
+                }>${f}층</option>`
+            )
+            .join("");
+        }
 
-                p.innerHTML = `
-                    <strong><span data-lang-ko="${originalKoLabel}" data-lang-en="${originalEnLabel}">${currentLang === 'ko' ? originalKoLabel : originalEnLabel}</span> :</strong>
+        p.innerHTML = `
+                    <strong><span data-lang-ko="${originalKoLabel}" data-lang-en="${originalEnLabel}">${
+          currentLang === "ko" ? originalKoLabel : originalEnLabel
+        }</span> :</strong>
                     <div class="location-selects">
                         <select id="buildingSelect">${buildingOptions}</select>
                         <select id="floorSelect">${initialFloorOptions}</select>
                     </div>
                 `;
 
-                setTimeout(() => {
-                    const buildingSelect = p.querySelector("#buildingSelect");
-                    const floorSelect = p.querySelector("#floorSelect");
+        setTimeout(() => {
+          const buildingSelect = p.querySelector("#buildingSelect");
+          const floorSelect = p.querySelector("#floorSelect");
 
-                    if (buildingSelect && floorSelect) {
-                        buildingSelect.addEventListener("change", () => {
-                            const selectedBuilding = buildingSelect.value;
-                            const floors = floorMap[selectedBuilding] || [];
-                            floorSelect.innerHTML = floors.map((f) => `<option value="${f}">${f}층</option>`).join("");
-                        });
-                    }
-                }, 0);
-            } else {
-                p.innerHTML = `<strong><span data-lang-ko="${originalKoLabel}" data-lang-en="${originalEnLabel}">${currentLang === 'ko' ? originalKoLabel : originalEnLabel}</span> :</strong> <input type="text" value="${value}" class="edit-input">`;
-            }
-        });
+          if (buildingSelect && floorSelect) {
+            buildingSelect.addEventListener("change", () => {
+              const selectedBuilding = buildingSelect.value;
+              const floors = floorMap[selectedBuilding] || [];
+              floorSelect.innerHTML = floors
+                .map((f) => `<option value="${f}">${f}층</option>`)
+                .join("");
+            });
+          }
+        }, 0);
+      } else {
+        p.innerHTML = `<strong><span data-lang-ko="${originalKoLabel}" data-lang-en="${originalEnLabel}">${
+          currentLang === "ko" ? originalKoLabel : originalEnLabel
+        }</span> :</strong> <input type="text" value="${value}" class="edit-input">`;
+      }
+    });
 
-        // 수정 모드 진입 시 언어 전환 다시 적용
-        window.setLanguage(currentLang);
-
-    } catch (error) {
-        console.error("Error fetching places data for edit:", error);
-        alert("위치 정보를 불러오는 데 실패했습니다: " + error.message);
-        // 오류 발생 시 원본 데이터로 되돌리기
-        originalContent.forEach((data) => {
-            if (data.element) data.element.innerHTML = data.originalHTML;
-        });
-        // '수정' 버튼 다시 보이게, '저장' 버튼 숨기게
-        editButton.classList.remove('hidden');
-        saveButton.classList.add('hidden');
-    }
+    // 수정 모드 진입 시 언어 전환 다시 적용
+    window.setLanguage(currentLang);
+  } catch (error) {
+    console.error("Error fetching places data for edit:", error);
+    alert("위치 정보를 불러오는 데 실패했습니다: " + error.message);
+    // 오류 발생 시 원본 데이터로 되돌리기
+    originalContent.forEach((data) => {
+      if (data.element) data.element.innerHTML = data.originalHTML;
+    });
+    // '수정' 버튼 다시 보이게, '저장' 버튼 숨기게
+    editButton.classList.remove("hidden");
+    saveButton.classList.add("hidden");
+  }
 }
 
-async function saveDetail(itemId, originalItem, editButton, saveButton, detailBody) {
-    console.log("saveDetail 함수 호출됨");
-    console.log("itemId:", itemId);
-    console.log("originalItem (전체):", originalItem);
-    
-    const content = document.getElementById("detail-content");
+async function saveDetail(
+  itemId,
+  originalItem,
+  editButton,
+  saveButton,
+  detailBody
+) {
+  console.log("saveDetail 함수 호출됨");
+  console.log("itemId:", itemId);
+  console.log("originalItem (전체):", originalItem);
 
-    const selectedTypeElement = detailBody.querySelector('input[name="type"]:checked');
-    const dateInput = detailBody.querySelector('p:nth-child(2) .date-input'); // 제조일자 input
-//js2//
+  const content = document.getElementById("detail-content");
 
-const shakeDateInput = detailBody.querySelector('p:nth-child(4) .date-input'); // 희석된 날짜 input
-    const buildingSelect = detailBody.querySelector("#buildingSelect");
-    const floorSelect = detailBody.querySelector("#floorSelect");
-    
-    console.log("selectedTypeElement:", selectedTypeElement);
-    console.log("dateInput:", dateInput);
-    console.log("shakeDateInput:", shakeDateInput);
-    console.log("buildingSelect:", buildingSelect);
-    console.log("floorSelect:", floorSelect);
+  const selectedTypeElement = detailBody.querySelector(
+    'input[name="type"]:checked'
+  );
+  const dateInput = detailBody.querySelector("p:nth-child(2) .date-input"); // 제조일자 input
+  //js2//
 
-    // 유효성 검사
-    if (!selectedTypeElement) { alert("종류를 선택해주세요."); return; }
-    if (!dateInput?.value) { alert("제조일자를 입력해주세요."); return; }
-    if (!shakeDateInput?.value) { alert("희석된 날짜를 입력해주세요."); return; }
-    if (!buildingSelect?.value || !floorSelect?.value) { alert("위치를 선택해주세요."); return; }
+  const shakeDateInput = detailBody.querySelector("p:nth-child(4) .date-input"); // 희석된 날짜 input
+  const buildingSelect = detailBody.querySelector("#buildingSelect");
+  const floorSelect = detailBody.querySelector("#floorSelect");
 
-    const newLocation = `${buildingSelect.value} ${floorSelect.value}층`;
+  console.log("selectedTypeElement:", selectedTypeElement);
+  console.log("dateInput:", dateInput);
+  console.log("shakeDateInput:", shakeDateInput);
+  console.log("buildingSelect:", buildingSelect);
+  console.log("floorSelect:", floorSelect);
 
-    // 타입명을 숫자 ID로 변환
-    const typeToId = {
-        '소화기': 1,
-        '소화전': 2,
-        'AED': 3
-    };
+  // 유효성 검사
+  if (!selectedTypeElement) {
+    alert("종류를 선택해주세요.");
+    return;
+  }
+  if (!dateInput?.value) {
+    alert("제조일자를 입력해주세요.");
+    return;
+  }
+  if (!shakeDateInput?.value) {
+    alert("희석된 날짜를 입력해주세요.");
+    return;
+  }
+  if (!buildingSelect?.value || !floorSelect?.value) {
+    alert("위치를 선택해주세요.");
+    return;
+  }
 
-    const updatedData = {
-        name: originalItem.name, // 이름은 수정 불가능하므로 originalItem에서 가져옴
-        type_name: selectedTypeElement.value, // 문자열 그대로 전송 시도
-        date: dateInput.value,
-        location: newLocation,
-        shake_date: shakeDateInput.value,
-        // status는 현재 수정 필드에 없으므로 originalItem에서 가져옴
-        status: originalItem.status
-    };
-    
-    console.log("전송할 데이터:", updatedData);
+  const newLocation = `${buildingSelect.value} ${floorSelect.value}층`;
 
-    // 변경사항 확인 (API 호출 전에)
-    const originalDateFormatted = originalItem.date ? new Date(originalItem.date).toISOString().split('T')[0] : "";
-    const originalShakeDateFormatted = originalItem.shake_date ? new Date(originalItem.shake_date).toISOString().split('T')[0] : "";
+  // 타입명을 숫자 ID로 변환
+  const typeToId = {
+    소화기: 1,
+    소화전: 2,
+    AED: 3,
+  };
 
-    const hasChanges =
-        updatedData.type !== originalItem.type ||
-        updatedData.date !== originalDateFormatted ||
-        updatedData.location !== originalItem.location ||
-        updatedData.shake_date !== originalShakeDateFormatted;
+  const updatedData = {
+    name: originalItem.name, // 이름은 수정 불가능하므로 originalItem에서 가져옴
+    type_name: selectedTypeElement.value, // 문자열 그대로 전송 시도
+    date: dateInput.value,
+    location: newLocation,
+    shake_date: shakeDateInput.value,
+    // status는 현재 수정 필드에 없으므로 originalItem에서 가져옴
+    status: originalItem.status,
+  };
 
-    if (!hasChanges) {
-        alert("수정된 내용이 없습니다.");
-        // 수정 모드 종료 및 원본 내용 복원
-        showDetailView(originalItem); // 원본 item을 다시 넘겨서 상세 뷰 갱신
-        return;
+  console.log("전송할 데이터:", updatedData);
+
+  // 변경사항 확인 (API 호출 전에)
+  const originalDateFormatted = originalItem.date
+    ? new Date(originalItem.date).toISOString().split("T")[0]
+    : "";
+  const originalShakeDateFormatted = originalItem.shake_date
+    ? new Date(originalItem.shake_date).toISOString().split("T")[0]
+    : "";
+
+  const hasChanges =
+    updatedData.type !== originalItem.type ||
+    updatedData.date !== originalDateFormatted ||
+    updatedData.location !== originalItem.location ||
+    updatedData.shake_date !== originalShakeDateFormatted;
+
+  if (!hasChanges) {
+    alert("수정된 내용이 없습니다.");
+    // 수정 모드 종료 및 원본 내용 복원
+    showDetailView(originalItem); // 원본 item을 다시 넘겨서 상세 뷰 갱신
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/management/${itemId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("서버 에러 응답:", errorData);
+      console.error("HTTP 상태:", response.status);
+      throw new Error(errorData.message || "서버 오류가 발생하였습니다.");
+    } else {
+      console.log("Update successful.");
+      await loadManagementItems(); // 데이터를 다시 로드하여 최신 정보 반영
+      // 서버에서 업데이트된 item을 다시 가져와서 showDetailView를 호출하면 가장 정확합니다.
+      // 하지만 지금은 목록으로 돌아가는 UX를 위해 showPage로 변경합니다.
+      showPage("data-management");
+      alert("데이터가 성공적으로 저장되었습니다.");
     }
-
-    try {
-        const response = await fetch(
-            `${API_BASE_URL}/management/${itemId}`,
-            {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updatedData),
-            }
-        );
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("서버 에러 응답:", errorData);
-            console.error("HTTP 상태:", response.status);
-            throw new Error(errorData.message || "서버 오류가 발생하였습니다.");
-        } else {
-            console.log("Update successful.");
-            await loadManagementItems(); // 데이터를 다시 로드하여 최신 정보 반영
-            // 서버에서 업데이트된 item을 다시 가져와서 showDetailView를 호출하면 가장 정확합니다.
-            // 하지만 지금은 목록으로 돌아가는 UX를 위해 showPage로 변경합니다.
-            showPage('data-management');
-            alert("데이터가 성공적으로 저장되었습니다.");
-        }
-    } catch (error) {
-        console.error("Error updating data:", error);
-        alert("데이터 업데이트 중 오류가 발생했습니다: " + error.message);
-        // 오류 발생 시 원본 데이터로 되돌리기 (사용자가 다시 시도할 수 있도록)
-        showDetailView(originalItem); // 원본 item을 다시 넘겨서 상세 뷰 갱신
-    } finally {
-        hideAllDropdowns();
-    }
+  } catch (error) {
+    console.error("Error updating data:", error);
+    alert("데이터 업데이트 중 오류가 발생했습니다: " + error.message);
+    // 오류 발생 시 원본 데이터로 되돌리기 (사용자가 다시 시도할 수 있도록)
+    showDetailView(originalItem); // 원본 item을 다시 넘겨서 상세 뷰 갱신
+  } finally {
+    hideAllDropdowns();
+  }
 }
 
 async function deleteRow(itemId) {
-    if (!itemId) {
-        console.error("Item ID not found for deletion.");
-        alert("삭제할 항목을 찾을 수 없습니다.");
-        return;
+  if (!itemId) {
+    console.error("Item ID not found for deletion.");
+    alert("삭제할 항목을 찾을 수 없습니다.");
+    return;
+  }
+
+  if (!confirm("정말로 이 항목을 삭제하시겠습니까?")) return;
+
+  const password = prompt("관리자 비밀번호를 입력하세요:");
+  if (!password) {
+    alert("비밀번호가 입력되지 않았습니다.");
+    return;
+  }
+
+  try {
+    const authResponse = await fetch(`${API_BASE_URL}/auth/password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password }),
+    });
+
+    if (!authResponse.ok) {
+      const errorData = await authResponse.json();
+      throw new Error(errorData.message || "비밀번호 인증 실패");
     }
 
-    if (confirm("정말로 이 항목을 삭제하시겠습니까?")) {
-        try {
-            const response = await fetch(
-                `${API_BASE_URL}/management/${itemId}`,
-                { method: "DELETE" }
-            );
+    // 인증 성공 시 삭제 요청
+    const deleteResponse = await fetch(`${API_BASE_URL}/management/${itemId}`, {
+      method: "DELETE",
+    });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "데이터 삭제에 실패했습니다.");
-            } else {
-                console.log("Deletion successful.");
-                await loadManagementItems(); // 목록 새로고침
-                showPage('data-management'); // 목록 화면으로 돌아가기
-                alert("데이터가 성공적으로 삭제되었습니다.");
-            }
-        }
-        catch (error) {
-            console.error("Error deleting data:", error);
-            alert("데이터 삭제 중 오류가 발생했습니다: " + error.message);
-        }
+    if (!deleteResponse.ok) {
+      const errorData = await deleteResponse.json();
+      throw new Error(errorData.message || "데이터 삭제에 실패했습니다.");
     }
-    hideAllDropdowns(); // 삭제 후 메뉴 닫기
+
+    console.log("Deletion successful.");
+    await loadManagementItems();
+    showPage("data-management");
+    alert("데이터가 성공적으로 삭제되었습니다.");
+  } catch (error) {
+    console.error("Error deleting data:", error);
+    alert("데이터 삭제 중 오류가 발생했습니다: " + error.message);
+  }
+  hideAllDropdowns(); // 삭제 후 메뉴 닫기
 }
 
 document.getElementById("back-button")?.addEventListener("click", () => {
-    const detailViewElement = document.getElementById("detail-view");
-    if (detailViewElement) {
-        detailViewElement.style.display = 'none';
-        detailViewElement.classList.add("hidden");
-    }
-    dataManagementPageContent.querySelector('.data-management-page-content-inner')?.classList.remove('hidden');
-    renderDataManagementPage(); // 목록을 새로고침하여 최신 상태를 반영
+  const detailViewElement = document.getElementById("detail-view");
+  if (detailViewElement) {
+    detailViewElement.style.display = "none";
+    detailViewElement.classList.add("hidden");
+  }
+  dataManagementPageContent
+    .querySelector(".data-management-page-content-inner")
+    ?.classList.remove("hidden");
+  renderDataManagementPage(); // 목록을 새로고침하여 최신 상태를 반영
 });
