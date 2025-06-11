@@ -61,9 +61,9 @@ function searchPlaces(category) {
       infoWindows = [];
 
       if (window.innerWidth <= 768) {
-        map.setLevel(4);
-      } else {
         map.setLevel(3);
+      } else {
+        map.setLevel(2);
       }
 
       if (places && places.length > 0) {
