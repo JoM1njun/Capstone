@@ -115,7 +115,7 @@ function searchPlaces(category) {
               break;
             case 2:
               content = `
-      <div class="info-window">
+      <div class="info-window" style="color: black;">
         <h4 style="font-size: 14px;">소화전</h4>
         <p style="font-size: 12px;">
           설치 장소: ${place.name}<br>
@@ -125,7 +125,7 @@ function searchPlaces(category) {
               break;
             case 3:
               content = `
-      <div class="info-window">
+      <div class="info-window" style="color: black;">
         <h4 style="font-size: 14px;">자동심장충격기 (AED)</h4>
         <p style="font-size: 12px;">
           비치 장소: SP스마트 배재관 2F<br>
